@@ -19,7 +19,7 @@
 #![no_main]
 
 use common::input;
-use uapi::{HostFn, HostFnImpl as api};
+use uapi::{HostFn, HostFnImpl as api, StorageFlags};
 
 const ADDRESS_KEY: [u8; 32] = [0u8; 32];
 const VALUE: [u8; 8] = [0, 0, 1u8, 0, 0, 0, 0, 0];
@@ -34,7 +34,7 @@ pub extern "C" fn deploy() {
 	let address = &mut &mut address[..];
 	let salt = [71u8, 17u8];
 
-	api::instantiate_v2(
+	api::instantiate(
 		code_hash,
 		0u64, // How much ref_time weight to devote for the execution. 0 = all.
 		0u64, // How much proof_size weight to devote for the execution. 0 = all.
@@ -48,7 +48,7 @@ pub extern "C" fn deploy() {
 	.unwrap();
 
 	// Return the deployed contract address.
-	api::set_storage(&ADDRESS_KEY, address);
+	api::set_storage(StorageFlags::empty(), &ADDRESS_KEY, address);
 }
 
 #[no_mangle]
@@ -56,10 +56,10 @@ pub extern "C" fn deploy() {
 pub extern "C" fn call() {
 	let mut callee_addr = [0u8; 32];
 	let callee_addr = &mut &mut callee_addr[..];
-	api::get_storage(&ADDRESS_KEY, callee_addr).unwrap();
+	api::get_storage(StorageFlags::empty(), &ADDRESS_KEY, callee_addr).unwrap();
 
 	// Calling the destination contract with non-empty input data should fail.
-	let res = api::call_v2(
+	let res = api::call(
 		uapi::CallFlags::empty(),
 		callee_addr,
 		0u64, // How much ref_time weight to devote for the execution. 0 = all.
@@ -72,7 +72,7 @@ pub extern "C" fn call() {
 	assert!(matches!(res, Err(uapi::ReturnErrorCode::CalleeTrapped)));
 
 	// Call the destination contract regularly, forcing it to self-destruct.
-	api::call_v2(
+	api::call(
 		uapi::CallFlags::empty(),
 		callee_addr,
 		0u64, // How much ref_time weight to devote for the execution. 0 = all.

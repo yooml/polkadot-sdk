@@ -250,3 +250,36 @@ where
 		}
 	}
 }
+
+/// Determines whether events should be collected during execution.
+#[derive(
+	Copy, Clone, PartialEq, Eq, RuntimeDebug, Decode, Encode, MaxEncodedLen, scale_info::TypeInfo,
+)]
+pub enum CollectEvents {
+	/// Collect events.
+	///
+	/// # Note
+	///
+	/// Events should only be collected when called off-chain, as this would otherwise
+	/// collect all the Events emitted in the block so far and put them into the PoV.
+	///
+	/// **Never** use this mode for on-chain execution.
+	UnsafeCollect,
+	/// Skip event collection.
+	Skip,
+}
+
+/// Determines whether debug messages will be collected.
+#[derive(
+	Copy, Clone, PartialEq, Eq, RuntimeDebug, Decode, Encode, MaxEncodedLen, scale_info::TypeInfo,
+)]
+pub enum DebugInfo {
+	/// Collect debug messages.
+	/// # Note
+	///
+	/// This should only ever be set to `UnsafeDebug` when executing as an RPC because
+	/// it adds allocations and could be abused to drive the runtime into an OOM panic.
+	UnsafeDebug,
+	/// Skip collection of debug messages.
+	Skip,
+}

@@ -340,10 +340,7 @@ impl<T: Config> TransientStorage<T> {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use crate::{
-		tests::{Test, ALICE, BOB, CHARLIE},
-		Error,
-	};
+	use crate::{test_utils::*, tests::Test, Error};
 	use core::u32::MAX;
 
 	// Calculate the allocation size for the given entry.

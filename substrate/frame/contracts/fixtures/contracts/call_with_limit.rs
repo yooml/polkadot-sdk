@@ -38,7 +38,7 @@ pub extern "C" fn call() {
 		forwarded_input: [u8],
 	);
 
-	api::call_v2(
+	api::call(
 		uapi::CallFlags::empty(),
 		callee_addr,
 		ref_time,

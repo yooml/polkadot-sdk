@@ -15,11 +15,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use super::GAS_LIMIT;
+use super::{deposit_limit, GAS_LIMIT};
 use crate::{
 	AccountIdLookupOf, AccountIdOf, BalanceOf, Code, CodeHash, CollectEvents, Config,
-	ContractExecResult, ContractInstantiateResult, DebugInfo, Determinism, EventRecordOf,
-	ExecReturnValue, InstantiateReturnValue, OriginFor, Pallet, Weight,
+	ContractExecResult, ContractInstantiateResult, DebugInfo, EventRecordOf, ExecReturnValue,
+	InstantiateReturnValue, OriginFor, Pallet, Weight,
 };
 use codec::{Encode, HasCompact};
 use core::fmt::Debug;
@@ -79,7 +79,7 @@ builder!(
 		origin: OriginFor<T>,
 		value: BalanceOf<T>,
 		gas_limit: Weight,
-		storage_deposit_limit: Option<<BalanceOf<T> as codec::HasCompact>::Type>,
+		storage_deposit_limit: BalanceOf<T>,
 		code: Vec<u8>,
 		data: Vec<u8>,
 		salt: Vec<u8>,
@@ -88,10 +88,10 @@ builder!(
 	/// Create an [`InstantiateWithCodeBuilder`] with default values.
 	pub fn instantiate_with_code(origin: OriginFor<T>, code: Vec<u8>) -> Self {
 		Self {
-			origin: origin,
+			origin,
 			value: 0u32.into(),
 			gas_limit: GAS_LIMIT,
-			storage_deposit_limit: None,
+			storage_deposit_limit: deposit_limit::<T>(),
 			code,
 			data: vec![],
 			salt: vec![],
@@ -104,7 +104,7 @@ builder!(
 		origin: OriginFor<T>,
 		value: BalanceOf<T>,
 		gas_limit: Weight,
-		storage_deposit_limit: Option<<BalanceOf<T> as codec::HasCompact>::Type>,
+		storage_deposit_limit: BalanceOf<T>,
 		code_hash: CodeHash<T>,
 		data: Vec<u8>,
 		salt: Vec<u8>,
@@ -116,7 +116,7 @@ builder!(
 			origin,
 			value: 0u32.into(),
 			gas_limit: GAS_LIMIT,
-			storage_deposit_limit: None,
+			storage_deposit_limit: deposit_limit::<T>(),
 			code_hash,
 			data: vec![],
 			salt: vec![],
@@ -126,10 +126,10 @@ builder!(
 
 builder!(
 	bare_instantiate(
-		origin: AccountIdOf<T>,
+		origin: OriginFor<T>,
 		value: BalanceOf<T>,
 		gas_limit: Weight,
-		storage_deposit_limit: Option<BalanceOf<T>>,
+		storage_deposit_limit: BalanceOf<T>,
 		code: Code<CodeHash<T>>,
 		data: Vec<u8>,
 		salt: Vec<u8>,
@@ -147,16 +147,16 @@ builder!(
 		self.build().result.unwrap().account_id
 	}
 
-	pub fn bare_instantiate(origin: AccountIdOf<T>, code: Code<CodeHash<T>>) -> Self {
+	pub fn bare_instantiate(origin: OriginFor<T>, code: Code<CodeHash<T>>) -> Self {
 		Self {
 			origin,
 			value: 0u32.into(),
 			gas_limit: GAS_LIMIT,
-			storage_deposit_limit: None,
+			storage_deposit_limit: deposit_limit::<T>(),
 			code,
 			data: vec![],
 			salt: vec![],
-			debug: DebugInfo::Skip,
+			debug: DebugInfo::UnsafeDebug,
 			collect_events: CollectEvents::Skip,
 		}
 	}
@@ -168,7 +168,7 @@ builder!(
 		dest: AccountIdLookupOf<T>,
 		value: BalanceOf<T>,
 		gas_limit: Weight,
-		storage_deposit_limit: Option<<BalanceOf<T> as codec::HasCompact>::Type>,
+		storage_deposit_limit: BalanceOf<T>,
 		data: Vec<u8>,
 	) -> DispatchResultWithPostInfo;
 
@@ -179,7 +179,7 @@ builder!(
 			dest,
 			value: 0u32.into(),
 			gas_limit: GAS_LIMIT,
-			storage_deposit_limit: None,
+			storage_deposit_limit: deposit_limit::<T>(),
 			data: vec![],
 		}
 	}
@@ -187,15 +187,14 @@ builder!(
 
 builder!(
 	bare_call(
-		origin: AccountIdOf<T>,
+		origin: OriginFor<T>,
 		dest: AccountIdOf<T>,
 		value: BalanceOf<T>,
 		gas_limit: Weight,
-		storage_deposit_limit: Option<BalanceOf<T>>,
+		storage_deposit_limit: BalanceOf<T>,
 		data: Vec<u8>,
 		debug: DebugInfo,
 		collect_events: CollectEvents,
-		determinism: Determinism,
 	) -> ContractExecResult<BalanceOf<T>, EventRecordOf<T>>;
 
 	/// Build the call and unwrap the result.
@@ -204,17 +203,16 @@ builder!(
 	}
 
 	/// Create a [`BareCallBuilder`] with default values.
-	pub fn bare_call(origin: AccountIdOf<T>, dest: AccountIdOf<T>) -> Self {
+	pub fn bare_call(origin: OriginFor<T>, dest: AccountIdOf<T>) -> Self {
 		Self {
 			origin,
 			dest,
 			value: 0u32.into(),
 			gas_limit: GAS_LIMIT,
-			storage_deposit_limit: None,
+			storage_deposit_limit: deposit_limit::<T>(),
 			data: vec![],
-			debug: DebugInfo::Skip,
+			debug: DebugInfo::UnsafeDebug,
 			collect_events: CollectEvents::Skip,
-			determinism: Determinism::Enforced,
 		}
 	}
 );

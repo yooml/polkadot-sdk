@@ -39,7 +39,7 @@ pub extern "C" fn call() {
 	api::call_runtime(call).unwrap();
 
 	// Call the callee
-	api::call_v2(
+	api::call(
 		uapi::CallFlags::empty(),
 		callee_addr,
 		0u64,                // How much ref_time to devote for the execution. 0 = all.

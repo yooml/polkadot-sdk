@@ -71,7 +71,7 @@ pub trait Ext<T: Config> {
 	/// it returns `Err`.
 	fn check_limit(
 		origin: &T::AccountId,
-		limit: Option<BalanceOf<T>>,
+		limit: BalanceOf<T>,
 		min_leftover: BalanceOf<T>,
 	) -> Result<BalanceOf<T>, DispatchError>;
 	/// This is called to inform the implementer that some balance should be charged due to
@@ -364,15 +364,12 @@ where
 	/// This tries to [`Ext::check_limit`] on `origin` and fails if this is not possible.
 	pub fn new(
 		origin: &Origin<T>,
-		limit: Option<BalanceOf<T>>,
+		limit: BalanceOf<T>,
 		min_leftover: BalanceOf<T>,
 	) -> Result<Self, DispatchError> {
 		// Check the limit only if the origin is not root.
 		return match origin {
-			Origin::Root => Ok(Self {
-				limit: limit.unwrap_or(T::DefaultDepositLimit::get()),
-				..Default::default()
-			}),
+			Origin::Root => Ok(Self { limit, ..Default::default() }),
 			Origin::Signed(o) => {
 				let limit = E::check_limit(o, limit, min_leftover)?;
 				Ok(Self { limit, ..Default::default() })
@@ -512,22 +509,12 @@ where
 impl<T: Config> Ext<T> for ReservingExt {
 	fn check_limit(
 		origin: &T::AccountId,
-		limit: Option<BalanceOf<T>>,
+		limit: BalanceOf<T>,
 		min_leftover: BalanceOf<T>,
 	) -> Result<BalanceOf<T>, DispatchError> {
-		// We are sending the `min_leftover` and the `min_balance` from the origin
-		// account as part of a contract call. Hence origin needs to have those left over
-		// as free balance after accounting for all deposits.
-		let max = T::Currency::reducible_balance(origin, Preservation::Preserve, Polite)
+		let limit = T::Currency::reducible_balance(origin, Preservation::Preserve, Polite)
 			.saturating_sub(min_leftover)
-			.saturating_sub(Pallet::<T>::min_balance());
-		let default = max.min(T::DefaultDepositLimit::get());
-		let limit = limit.unwrap_or(default);
-		ensure!(
-			limit <= max &&
-				matches!(T::Currency::can_withdraw(origin, limit), WithdrawConsequence::Success),
-			<Error<T>>::StorageDepositNotEnoughFunds,
-		);
+			.min(limit);
 		Ok(limit)
 	}
 
@@ -610,10 +597,7 @@ mod private {
 #[cfg(test)]
 mod tests {
 	use super::*;
-	use crate::{
-		exec::AccountIdOf,
-		tests::{Test, ALICE, BOB, CHARLIE},
-	};
+	use crate::{exec::AccountIdOf, test_utils::*, tests::Test};
 	use frame_support::parameter_types;
 	use pretty_assertions::assert_eq;
 
@@ -654,10 +638,9 @@ mod tests {
 	impl Ext<Test> for TestExt {
 		fn check_limit(
 			origin: &AccountIdOf<Test>,
-			limit: Option<BalanceOf<Test>>,
+			limit: BalanceOf<Test>,
 			min_leftover: BalanceOf<Test>,
 		) -> Result<BalanceOf<Test>, DispatchError> {
-			let limit = limit.unwrap_or(42);
 			TestExtTestValue::mutate(|ext| {
 				ext.limit_checks
 					.push(LimitCheck { origin: origin.clone(), limit, min_leftover })
@@ -718,7 +701,7 @@ mod tests {
 	fn new_reserves_balance_works() {
 		clear_ext();
 
-		TestMeter::new(&Origin::from_account_id(ALICE), Some(1_000), 0).unwrap();
+		TestMeter::new(&Origin::from_account_id(ALICE), 1_000, 0).unwrap();
 
 		assert_eq!(
 			TestExtTestValue::get(),
@@ -733,7 +716,7 @@ mod tests {
 	fn empty_charge_works() {
 		clear_ext();
 
-		let mut meter = TestMeter::new(&Origin::from_account_id(ALICE), Some(1_000), 0).unwrap();
+		let mut meter = TestMeter::new(&Origin::from_account_id(ALICE), 1_000, 0).unwrap();
 		assert_eq!(meter.available(), 1_000);
 
 		// an empty charge does not create a `Charge` entry
@@ -790,7 +773,7 @@ mod tests {
 		for test_case in test_cases {
 			clear_ext();
 
-			let mut meter = TestMeter::new(&test_case.origin, Some(100), 0).unwrap();
+			let mut meter = TestMeter::new(&test_case.origin, 100, 0).unwrap();
 			assert_eq!(meter.available(), 100);
 
 			let mut nested0_info = new_info(StorageInfo {
@@ -875,7 +858,7 @@ mod tests {
 		for test_case in test_cases {
 			clear_ext();
 
-			let mut meter = TestMeter::new(&test_case.origin, Some(1_000), 0).unwrap();
+			let mut meter = TestMeter::new(&test_case.origin, 1_000, 0).unwrap();
 			assert_eq!(meter.available(), 1_000);
 
 			let mut nested0 = meter.nested(BalanceOf::<Test>::zero());

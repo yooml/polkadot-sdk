@@ -37,7 +37,7 @@ pub extern "C" fn call() {
 		forwarded_input: [u8],
 	);
 
-	api::call_v2(
+	api::call(
 		uapi::CallFlags::from_bits(flags).unwrap(),
 		callee_addr,
 		0u64,                 // How much ref_time to devote for the execution. 0 = all.

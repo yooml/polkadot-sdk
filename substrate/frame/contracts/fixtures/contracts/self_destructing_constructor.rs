@@ -24,7 +24,7 @@ use uapi::{HostFn, HostFnImpl as api};
 #[no_mangle]
 #[polkavm_derive::polkavm_export]
 pub extern "C" fn deploy() {
-	api::terminate_v1(&[0u8; 32]);
+	api::terminate(&[0u8; 32]);
 }
 
 #[no_mangle]

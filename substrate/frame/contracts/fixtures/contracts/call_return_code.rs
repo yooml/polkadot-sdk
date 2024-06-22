@@ -38,7 +38,7 @@ pub extern "C" fn call() {
 	);
 
 	// Call the callee
-	let err_code = match api::call_v2(
+	let err_code = match api::call(
 		uapi::CallFlags::empty(),
 		callee_addr,
 		0u64,                  // How much ref_time to devote for the execution. 0 = all.

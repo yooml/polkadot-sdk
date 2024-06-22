@@ -37,7 +37,7 @@ pub extern "C" fn call() {
 
 	if !input.is_empty() {
 		output!(addr, [0u8; 32], api::address,);
-		api::call_v2(
+		api::call(
 			uapi::CallFlags::ALLOW_REENTRY,
 			addr,
 			0u64,                // How much ref_time to devote for the execution. 0 = all.
@@ -50,6 +50,6 @@ pub extern "C" fn call() {
 		.unwrap();
 	} else {
 		// Try to terminate and give balance to django.
-		api::terminate_v1(&DJANGO);
+		api::terminate(&DJANGO);
 	}
 }

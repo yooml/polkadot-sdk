@@ -19,7 +19,7 @@
 #![no_main]
 
 use common::output;
-use uapi::{HostFn, HostFnImpl as api};
+use uapi::{HostFn, HostFnImpl as api, StorageFlags};
 
 #[no_mangle]
 #[polkavm_derive::polkavm_export]
@@ -35,7 +35,7 @@ pub extern "C" fn call() {
 	let mut value = [0u8; 32];
 	let value = &mut &mut value[..];
 	value[0] = 1u8;
-	api::set_storage(&key, value);
+	api::set_storage(StorageFlags::empty(), &key, value);
 
 	// Assert that `value_transferred` is equal to the value
 	// passed to the `caller` contract: 1337.

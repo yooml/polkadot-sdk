@@ -79,3 +79,11 @@ bitflags! {
 		const READ_ONLY = 0b0001_0000;
 	}
 }
+
+bitflags! {
+	/// Flags used by a contract to customize storage behaviour.
+	pub struct StorageFlags: u32 {
+		/// Access the transient storage instead of the persistent one.
+		const TRANSIENT = 0x0000_0001;
+	}
+}

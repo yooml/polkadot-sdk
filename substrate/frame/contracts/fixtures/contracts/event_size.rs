@@ -21,6 +21,8 @@
 use common::input;
 use uapi::{HostFn, HostFnImpl as api};
 
+static BUFFER: [u8; 16 * 1024 + 1] = [0u8; 16 * 1024 + 1];
+
 #[no_mangle]
 #[polkavm_derive::polkavm_export]
 pub extern "C" fn deploy() {}
@@ -30,8 +32,7 @@ pub extern "C" fn deploy() {}
 pub extern "C" fn call() {
 	input!(len: u32,);
 
-	let buffer = [0u8; 16 * 1024 + 1];
-	let data = &buffer[..len as usize];
+	let data = &BUFFER[..len as usize];
 
 	api::deposit_event(&[0u8; 0], data);
 }

@@ -19,6 +19,20 @@
 
 extern crate common;
 
+use uapi::{HostFn, HostFnImpl as api, ReturnFlags};
+
+// Export that is never called. We can put code here that should be in the binary
+// but is never supposed to be run.
+#[no_mangle]
+#[polkavm_derive::polkavm_export]
+pub extern "C" fn call_never() {
+	// Make sure the 0xDEADBEEF pattern appears in the binary by
+	// making it opaque to the optimizer. The benchmarking code will
+	// just find and replace this pattern to make the code unique when
+	// necessary.
+	api::return_value(ReturnFlags::empty(), &[0xDE, 0xAD, 0xBE, 0xEF]);
+}
+
 #[no_mangle]
 #[polkavm_derive::polkavm_export]
 pub extern "C" fn deploy() {}

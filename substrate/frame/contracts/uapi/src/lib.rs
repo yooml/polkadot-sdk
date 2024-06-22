@@ -20,12 +20,9 @@
 
 mod flags;
 pub use flags::*;
-
-#[cfg(any(target_arch = "wasm32", target_arch = "riscv32"))]
 mod host;
 
-#[cfg(any(target_arch = "wasm32", target_arch = "riscv32"))]
-pub use host::*;
+pub use host::{HostFn, HostFnImpl};
 
 macro_rules! define_error_codes {
     (
@@ -36,7 +33,7 @@ macro_rules! define_error_codes {
     ) => {
         /// Every error that can be returned to a contract when it calls any of the host functions.
         #[derive(Debug, PartialEq, Eq)]
-        #[repr(u8)]
+        #[repr(u32)]
         pub enum ReturnErrorCode {
             /// API call successful.
             Success = 0,
@@ -79,30 +76,26 @@ define_error_codes! {
 	CalleeReverted = 2,
 	/// The passed key does not exist in storage.
 	KeyNotFound = 3,
-	/// Deprecated and no longer returned: There is only the minimum balance.
-	_BelowSubsistenceThreshold = 4,
 	/// Transfer failed for other not further specified reason. Most probably
 	/// reserved or locked balance of the sender that was preventing the transfer.
-	TransferFailed = 5,
-	/// Deprecated and no longer returned: Endowment is no longer required.
-	_EndowmentTooLow = 6,
+	TransferFailed = 4,
 	/// No code could be found at the supplied code hash.
-	CodeNotFound = 7,
+	CodeNotFound = 5,
 	/// The account that was called is no contract.
-	NotCallable = 8,
+	NotCallable = 6,
 	/// The call to `debug_message` had no effect because debug message
 	/// recording was disabled.
-	LoggingDisabled = 9,
+	LoggingDisabled = 7,
 	/// The call dispatched by `call_runtime` was executed but returned an error.
-	CallRuntimeFailed = 10,
+	CallRuntimeFailed = 8,
 	/// ECDSA public key recovery failed. Most probably wrong recovery id or signature.
-	EcdsaRecoveryFailed = 11,
+	EcdsaRecoveryFailed = 9,
 	/// sr25519 signature verification failed.
-	Sr25519VerifyFailed = 12,
+	Sr25519VerifyFailed = 10,
 	/// The `xcm_execute` call failed.
-	XcmExecutionFailed = 13,
+	XcmExecutionFailed = 11,
 	/// The `xcm_send` call failed.
-	XcmSendFailed = 14,
+	XcmSendFailed = 12,
 }
 
 /// The raw return code returned by the host side.

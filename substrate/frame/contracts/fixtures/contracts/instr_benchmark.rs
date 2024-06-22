@@ -14,13 +14,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-//! This fixture tests if account_reentrance_count works as expected.
 #![no_std]
 #![no_main]
 
+extern crate common;
+
 use common::input;
-use uapi::{HostFn, HostFnImpl as api};
+use uapi::{HostFn, HostFnImpl as api, ReturnFlags};
 
 #[no_mangle]
 #[polkavm_derive::polkavm_export]
@@ -29,11 +29,13 @@ pub extern "C" fn deploy() {}
 #[no_mangle]
 #[polkavm_derive::polkavm_export]
 pub extern "C" fn call() {
-	input!(callee: [u8; 32],);
+	input!(rounds: u32, start: u32, div: u32, mult: u32, add: u32, );
 
-	#[allow(deprecated)]
-	let reentrance_count = api::account_reentrance_count(callee);
+	let mut acc = start;
 
-	// Return the reentrance count.
-	api::return_value(uapi::ReturnFlags::empty(), &reentrance_count.to_le_bytes());
+	for _ in 0..rounds {
+		acc = acc / div * mult + add;
+	}
+
+	api::return_value(ReturnFlags::empty(), start.to_le_bytes().as_ref());
 }

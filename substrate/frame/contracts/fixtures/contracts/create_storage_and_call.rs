@@ -20,7 +20,7 @@
 #![no_main]
 
 use common::input;
-use uapi::{HostFn, HostFnImpl as api};
+use uapi::{HostFn, HostFnImpl as api, StorageFlags};
 
 #[no_mangle]
 #[polkavm_derive::polkavm_export]
@@ -37,10 +37,10 @@ pub extern "C" fn call() {
 	);
 
 	// create 4 byte of storage before calling
-	api::set_storage(buffer, &[1u8; 4]);
+	api::set_storage(StorageFlags::empty(), buffer, &[1u8; 4]);
 
 	// Call the callee
-	api::call_v2(
+	api::call(
 		uapi::CallFlags::empty(),
 		callee,
 		0u64, // How much ref_time weight to devote for the execution. 0 = all.
@@ -54,5 +54,5 @@ pub extern "C" fn call() {
 
 	// create 8 byte of storage after calling
 	// item of 12 bytes because we override 4 bytes
-	api::set_storage(buffer, &[1u8; 12]);
+	api::set_storage(StorageFlags::empty(), buffer, &[1u8; 12]);
 }

@@ -19,7 +19,7 @@
 #![no_main]
 
 extern crate common;
-use uapi::{HostFn, HostFnImpl as api};
+use uapi::{HostFn, HostFnImpl as api, StorageFlags};
 
 #[no_mangle]
 #[polkavm_derive::polkavm_export]
@@ -28,5 +28,5 @@ pub extern "C" fn deploy() {}
 #[no_mangle]
 #[polkavm_derive::polkavm_export]
 pub extern "C" fn call() {
-	api::set_storage(&[0u8; 32], &[0u8; 4]);
+	api::set_storage(StorageFlags::empty(), &[0u8; 32], &[0u8; 4]);
 }

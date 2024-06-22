@@ -11,11 +11,8 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-use crate::{CallFlags, Result, ReturnFlags};
+use crate::{CallFlags, Result, ReturnFlags, StorageFlags};
 use paste::paste;
-
-#[cfg(target_arch = "wasm32")]
-mod wasm32;
 
 #[cfg(target_arch = "riscv32")]
 mod riscv32;
@@ -36,54 +33,11 @@ macro_rules! hash_fn {
 	};
 }
 
-// TODO remove cfg once used by all targets
-#[cfg(target_arch = "wasm32")]
-#[inline(always)]
-fn extract_from_slice(output: &mut &mut [u8], new_len: usize) {
-	debug_assert!(new_len <= output.len());
-	let tmp = core::mem::take(output);
-	*output = &mut tmp[..new_len];
-}
-
-#[cfg(target_arch = "wasm32")]
-#[inline(always)]
-fn ptr_len_or_sentinel(data: &mut Option<&mut &mut [u8]>) -> (*mut u8, u32) {
-	match data {
-		Some(ref mut data) => (data.as_mut_ptr(), data.len() as _),
-		None => (crate::SENTINEL as _, 0),
-	}
-}
-
-#[cfg(target_arch = "wasm32")]
-#[inline(always)]
-fn ptr_or_sentinel(data: &Option<&[u8]>) -> *const u8 {
-	match data {
-		Some(ref data) => data.as_ptr(),
-		None => crate::SENTINEL as _,
-	}
-}
-
-/// Implements [`HostFn`] for each supported target architecture.
+/// Implements [`HostFn`] when compiled on supported architectures (RISC-V).
 pub enum HostFnImpl {}
 
-/// Defines all the host apis implemented by both wasm and RISC-V vms.
+/// Defines all the host apis available to contracts.
 pub trait HostFn: private::Sealed {
-	/// Returns the number of times specified contract exists on the call stack. Delegated calls are
-	/// not counted as separate calls.
-	///
-	/// # Parameters
-	///
-	/// - `account`: The contract address. Should be decodable as an `T::AccountId`. Traps
-	///   otherwise.
-	///
-	/// # Return
-	///
-	///  Returns the number of times specified contract exists on the call stack.
-	#[deprecated(
-		note = "Unstable function. Behaviour can change without further notice. Use only for testing."
-	)]
-	fn account_reentrance_count(account: &[u8]) -> u32;
-
 	/// Stores the address of the current contract into the supplied buffer.
 	///
 	/// If the available space in `output` is less than the size of the value a trap is triggered.
@@ -122,33 +76,6 @@ pub trait HostFn: private::Sealed {
 	/// - `output`: A reference to the output data buffer to write the block number.
 	fn block_number(output: &mut &mut [u8]);
 
-	/// Make a call to another contract.
-	///
-	/// This is equivalent to calling the newer version of this function with
-	/// `flags` set to [`CallFlags::ALLOW_REENTRY`]. See the newer version for documentation.
-	#[deprecated(note = "Deprecated, use newer version instead")]
-	fn call(
-		callee: &[u8],
-		gas: u64,
-		value: &[u8],
-		input_data: &[u8],
-		output: Option<&mut &mut [u8]>,
-	) -> Result;
-
-	/// Make a call to another contract.
-	///
-	/// Equivalent to the newer [`Self::call_v2`] version but works with
-	/// *ref_time* Weight only
-	#[deprecated(note = "Deprecated, use newer version instead")]
-	fn call_v1(
-		flags: CallFlags,
-		callee: &[u8],
-		gas: u64,
-		value: &[u8],
-		input_data: &[u8],
-		output: Option<&mut &mut [u8]>,
-	) -> Result;
-
 	/// Call (possibly transferring some amount of funds) into the specified account.
 	///
 	/// # Parameters
@@ -176,7 +103,7 @@ pub trait HostFn: private::Sealed {
 	/// - [CalleeTrapped][`crate::ReturnErrorCode::CalleeTrapped]
 	/// - [TransferFailed][`crate::ReturnErrorCode::TransferFailed]
 	/// - [NotCallable][`crate::ReturnErrorCode::NotCallable]
-	fn call_v2(
+	fn call(
 		flags: CallFlags,
 		callee: &[u8],
 		ref_time_limit: u64,
@@ -276,13 +203,6 @@ pub trait HostFn: private::Sealed {
 
 	/// Clear the value at the given key in the contract storage.
 	///
-	/// Equivalent to the newer [`Self::clear_storage_v1`] version with
-	/// the exception of the return type. Still a valid thing to call when not interested in the
-	/// return value.
-	fn clear_storage(key: &[u8]);
-
-	/// Clear the value at the given key in the contract storage.
-	///
 	/// # Parameters
 	///
 	/// - `key`: The storage key.
@@ -290,21 +210,7 @@ pub trait HostFn: private::Sealed {
 	/// # Return
 	///
 	/// Returns the size of the pre-existing value at the specified key if any.
-	fn clear_storage_v1(key: &[u8]) -> Option<u32>;
-
-	/// Clear the value at the given key in the contract transient storage.
-	///
-	/// # Parameters
-	///
-	/// - `key`: The storage key.
-	///
-	/// # Return
-	///
-	/// Returns the size of the pre-existing value at the specified key if any.
-	#[deprecated(
-		note = "Unstable function. Behaviour can change without further notice. Use only for testing."
-	)]
-	fn clear_transient_storage(key: &[u8]) -> Option<u32>;
+	fn clear_storage(flags: StorageFlags, key: &[u8]) -> Option<u32>;
 
 	/// Retrieve the code hash for a specified contract address.
 	///
@@ -322,12 +228,6 @@ pub trait HostFn: private::Sealed {
 
 	/// Checks whether there is a value stored under the given key.
 	///
-	/// This version is to be used with a fixed sized storage key. For runtimes supporting
-	/// transparent hashing, please use the newer version of this function.
-	fn contains_storage(key: &[u8]) -> Option<u32>;
-
-	/// Checks whether there is a value stored under the given key.
-	///
 	/// The key length must not exceed the maximum defined by the contracts module parameter.
 	///
 	/// # Parameters
@@ -336,22 +236,7 @@ pub trait HostFn: private::Sealed {
 	/// # Return
 	///
 	/// Returns the size of the pre-existing value at the specified key if any.
-	fn contains_storage_v1(key: &[u8]) -> Option<u32>;
-
-	/// Checks whether there is a value stored under the given key in transient storage.
-	///
-	/// The key length must not exceed the maximum defined by the contracts module parameter.
-	///
-	/// # Parameters
-	/// - `key`: The storage key.
-	///
-	/// # Return
-	///
-	/// Returns the size of the pre-existing value at the specified key if any.
-	#[deprecated(
-		note = "Unstable function. Behaviour can change without further notice. Use only for testing."
-	)]
-	fn contains_transient_storage(key: &[u8]) -> Option<u32>;
+	fn contains_storage(flags: StorageFlags, key: &[u8]) -> Option<u32>;
 
 	/// Emit a custom debug message.
 	///
@@ -444,12 +329,6 @@ pub trait HostFn: private::Sealed {
 	/// - [EcdsaRecoveryFailed][`crate::ReturnErrorCode::EcdsaRecoveryFailed]
 	fn ecdsa_to_eth_address(pubkey: &[u8; 33], output: &mut [u8; 20]) -> Result;
 
-	/// Stores the weight left into the supplied buffer.
-	///
-	/// Equivalent to the newer [`Self::gas_left_v1`] version but
-	/// works with *ref_time* Weight only.
-	fn gas_left(out: &mut &mut [u8]);
-
 	/// Stores the amount of weight left into the supplied buffer.
 	/// The data is encoded as Weight.
 	///
@@ -458,16 +337,7 @@ pub trait HostFn: private::Sealed {
 	/// # Parameters
 	///
 	/// - `output`: A reference to the output data buffer to write the weight left.
-	#[deprecated(
-		note = "Unstable function. Behaviour can change without further notice. Use only for testing."
-	)]
-	fn gas_left_v1(output: &mut &mut [u8]);
-
-	/// Retrieve the value under the given key from storage.
-	///
-	/// This version is to be used with a fixed sized storage key. For runtimes supporting
-	/// transparent hashing, please use the newer version of this function.
-	fn get_storage(key: &[u8], output: &mut &mut [u8]) -> Result;
+	fn weight_left(output: &mut &mut [u8]);
 
 	/// Retrieve the value under the given key from storage.
 	///
@@ -480,23 +350,7 @@ pub trait HostFn: private::Sealed {
 	/// # Errors
 	///
 	/// [KeyNotFound][`crate::ReturnErrorCode::KeyNotFound]
-	fn get_storage_v1(key: &[u8], output: &mut &mut [u8]) -> Result;
-
-	/// Retrieve the value under the given key from transient storage.
-	///
-	/// The key length must not exceed the maximum defined by the contracts module parameter.
-	///
-	/// # Parameters
-	/// - `key`: The storage key.
-	/// - `output`: A reference to the output data buffer to write the storage entry.
-	///
-	/// # Errors
-	///
-	/// [KeyNotFound][`crate::ReturnErrorCode::KeyNotFound]
-	#[deprecated(
-		note = "Unstable function. Behaviour can change without further notice. Use only for testing."
-	)]
-	fn get_transient_storage(key: &[u8], output: &mut &mut [u8]) -> Result;
+	fn get_storage(flags: StorageFlags, key: &[u8], output: &mut &mut [u8]) -> Result;
 
 	hash_fn!(sha2_256, 32);
 	hash_fn!(keccak_256, 32);
@@ -515,21 +369,6 @@ pub trait HostFn: private::Sealed {
 	///
 	/// - `output`: A reference to the output data buffer to write the input data.
 	fn input(output: &mut &mut [u8]);
-
-	/// Instantiate a contract with the specified code hash.
-	///
-	/// Equivalent to the newer [`Self::instantiate_v2`] version but works
-	/// with *ref_time* Weight only.
-	#[deprecated(note = "Deprecated, use newer version instead")]
-	fn instantiate_v1(
-		code_hash: &[u8],
-		gas: u64,
-		value: &[u8],
-		input: &[u8],
-		address: Option<&mut &mut [u8]>,
-		output: Option<&mut &mut [u8]>,
-		salt: &[u8],
-	) -> Result;
 
 	/// Instantiate a contract with the specified code hash.
 	///
@@ -565,7 +404,7 @@ pub trait HostFn: private::Sealed {
 	/// - [CalleeTrapped][`crate::ReturnErrorCode::CalleeTrapped]
 	/// - [TransferFailed][`crate::ReturnErrorCode::TransferFailed]
 	/// - [CodeNotFound][`crate::ReturnErrorCode::CodeNotFound]
-	fn instantiate_v2(
+	fn instantiate(
 		code_hash: &[u8],
 		ref_time_limit: u64,
 		proof_size_limit: u64,
@@ -576,12 +415,6 @@ pub trait HostFn: private::Sealed {
 		output: Option<&mut &mut [u8]>,
 		salt: &[u8],
 	) -> Result;
-
-	/// Returns a nonce that is unique per contract instantiation.
-	///
-	/// The nonce is incremented for each successful contract instantiation. This is a
-	/// sensible default salt for contract instantiations.
-	fn instantiation_nonce() -> u64;
 
 	/// Checks whether a specified address belongs to a contract.
 	///
@@ -620,17 +453,6 @@ pub trait HostFn: private::Sealed {
 	///
 	/// - `output`: A reference to the output data buffer to write the timestamp.
 	fn now(output: &mut &mut [u8]);
-
-	/// Returns the number of times the currently executing contract exists on the call stack in
-	/// addition to the calling instance.
-	///
-	/// # Return
-	///
-	/// Returns `0` when there is no reentrancy.
-	#[deprecated(
-		note = "Unstable function. Behaviour can change without further notice. Use only for testing."
-	)]
-	fn reentrance_count() -> u32;
 
 	/// Removes the delegate dependency from the contract.
 	///
@@ -692,19 +514,6 @@ pub trait HostFn: private::Sealed {
 
 	/// Set the value at the given key in the contract storage.
 	///
-	/// Equivalent to [`Self::set_storage_v1`] version with the
-	/// exception of the return type. Still a valid thing to call  for fixed sized storage key, when
-	/// not interested in the return value.
-	fn set_storage(key: &[u8], value: &[u8]);
-
-	/// Set the value at the given key in the contract storage.
-	///
-	/// This version is to be used with a fixed sized storage key. For runtimes supporting
-	/// transparent hashing, please use the newer version of this function.
-	fn set_storage_v1(key: &[u8], value: &[u8]) -> Option<u32>;
-
-	/// Set the value at the given key in the contract storage.
-	///
 	/// The key and value lengths must not exceed the maximums defined by the contracts module
 	/// parameters.
 	///
@@ -716,25 +525,7 @@ pub trait HostFn: private::Sealed {
 	/// # Return
 	///
 	/// Returns the size of the pre-existing value at the specified key if any.
-	fn set_storage_v2(key: &[u8], value: &[u8]) -> Option<u32>;
-
-	/// Set the value at the given key in the contract transient storage.
-	///
-	/// The key and value lengths must not exceed the maximums defined by the contracts module
-	/// parameters.
-	///
-	/// # Parameters
-	///
-	/// - `key`: The storage key.
-	/// - `encoded_value`: The storage value.
-	///
-	/// # Return
-	///
-	/// Returns the size of the pre-existing value at the specified key if any.
-	#[deprecated(
-		note = "Unstable function. Behaviour can change without further notice. Use only for testing."
-	)]
-	fn set_transient_storage(key: &[u8], value: &[u8]) -> Option<u32>;
+	fn set_storage(flags: StorageFlags, key: &[u8], value: &[u8]) -> Option<u32>;
 
 	/// Verify a sr25519 signature
 	///
@@ -757,21 +548,7 @@ pub trait HostFn: private::Sealed {
 	/// # Errors
 	///
 	/// [KeyNotFound][`crate::ReturnErrorCode::KeyNotFound]
-	fn take_storage(key: &[u8], output: &mut &mut [u8]) -> Result;
-
-	/// Retrieve and remove the value under the given key from transient storage.
-	///
-	/// # Parameters
-	/// - `key`: The storage key.
-	/// - `output`: A reference to the output data buffer to write the storage entry.
-	///
-	/// # Errors
-	///
-	/// [KeyNotFound][`crate::ReturnErrorCode::KeyNotFound]
-	#[deprecated(
-		note = "Unstable function. Behaviour can change without further notice. Use only for testing."
-	)]
-	fn take_transient_storage(key: &[u8], output: &mut &mut [u8]) -> Result;
+	fn take_storage(flags: StorageFlags, key: &[u8], output: &mut &mut [u8]) -> Result;
 
 	/// Transfer some amount of funds into the specified account.
 	///
@@ -785,12 +562,6 @@ pub trait HostFn: private::Sealed {
 	///
 	/// - [TransferFailed][`crate::ReturnErrorCode::TransferFailed]
 	fn transfer(account_id: &[u8], value: &[u8]) -> Result;
-
-	/// Remove the calling account and transfer remaining balance.
-	///
-	/// This is equivalent to calling the newer version of this function
-	#[deprecated(note = "Deprecated, use newer version instead")]
-	fn terminate(beneficiary: &[u8]) -> !;
 
 	/// Remove the calling account and transfer remaining **free** balance.
 	///
@@ -808,7 +579,7 @@ pub trait HostFn: private::Sealed {
 	/// - The contract is live i.e is already on the call stack.
 	/// - Failed to send the balance to the beneficiary.
 	/// - The deletion queue is full.
-	fn terminate_v1(beneficiary: &[u8]) -> !;
+	fn terminate(beneficiary: &[u8]) -> !;
 
 	/// Stores the value transferred along with this call/instantiate into the supplied buffer.
 	/// The data is encoded as `T::Balance`.
@@ -821,13 +592,6 @@ pub trait HostFn: private::Sealed {
 	fn value_transferred(output: &mut &mut [u8]);
 
 	/// Stores the price for the specified amount of gas into the supplied buffer.
-	///
-	/// Equivalent to the newer [`Self::weight_to_fee_v1`] version but
-	/// works with *ref_time* Weight only. It is recommended to switch to the latest version, once
-	/// it's stabilized.
-	fn weight_to_fee(gas: u64, output: &mut &mut [u8]);
-
-	/// Stores the price for the specified amount of gas into the supplied buffer.
 	/// The data is encoded as `T::Balance`.
 	///
 	/// If the available space in `output` is less than the size of the value a trap is triggered.
@@ -837,10 +601,7 @@ pub trait HostFn: private::Sealed {
 	/// - `ref_time_limit`: The *ref_time* Weight limit to query the price for.
 	/// - `proof_size_limit`: The *proof_size* Weight limit to query the price for.
 	/// - `output`: A reference to the output data buffer to write the price.
-	#[deprecated(
-		note = "Unstable function. Behaviour can change without further notice. Use only for testing."
-	)]
-	fn weight_to_fee_v1(ref_time_limit: u64, proof_size_limit: u64, output: &mut &mut [u8]);
+	fn weight_to_fee(ref_time_limit: u64, proof_size_limit: u64, output: &mut &mut [u8]);
 
 	/// Execute an XCM program locally, using the contract's address as the origin.
 	/// This is equivalent to dispatching `pallet_xcm::execute` through call_runtime, except that
@@ -856,9 +617,6 @@ pub trait HostFn: private::Sealed {
 	///
 	/// Returns `Error::Success` when the XCM execution attempt is successful. When the XCM
 	/// execution fails, `ReturnCode::XcmExecutionFailed` is returned
-	#[deprecated(
-		note = "Unstable function. Behaviour can change without further notice. Use only for testing."
-	)]
 	fn xcm_execute(msg: &[u8]) -> Result;
 
 	/// Send an XCM program from the contract to the specified destination.
@@ -876,9 +634,6 @@ pub trait HostFn: private::Sealed {
 	///
 	/// Returns `ReturnCode::Success` when the message was successfully sent. When the XCM
 	/// execution fails, `ReturnErrorCode::XcmSendFailed` is returned.
-	#[deprecated(
-		note = "Unstable function. Behaviour can change without further notice. Use only for testing."
-	)]
 	fn xcm_send(dest: &[u8], msg: &[u8], output: &mut [u8; 32]) -> Result;
 }
 

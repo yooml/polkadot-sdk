@@ -36,7 +36,7 @@ pub extern "C" fn call() {
 	);
 
 	// Call the callee
-	api::call_v2(
+	api::call(
 		uapi::CallFlags::READ_ONLY,
 		callee_addr,
 		0u64,                // How much ref_time to devote for the execution. 0 = all.

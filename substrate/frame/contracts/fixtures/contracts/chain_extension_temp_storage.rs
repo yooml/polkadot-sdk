@@ -50,7 +50,7 @@ pub extern "C" fn call() {
 		output!(addr, [0u8; 32], api::address,);
 
 		// call self
-		api::call_v2(
+		api::call(
 			uapi::CallFlags::ALLOW_REENTRY,
 			addr,
 			0u64,                // How much ref_time to devote for the execution. 0 = all.

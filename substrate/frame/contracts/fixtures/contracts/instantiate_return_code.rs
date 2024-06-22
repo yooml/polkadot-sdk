@@ -31,7 +31,7 @@ pub extern "C" fn call() {
 	input!(buffer, 36, code_hash: [u8; 32],);
 	let input = &buffer[32..];
 
-	let err_code = match api::instantiate_v2(
+	let err_code = match api::instantiate(
 		code_hash,
 		0u64, // How much ref_time weight to devote for the execution. 0 = all.
 		0u64, /* How much proof_size weight to devote for the execution. 0 =

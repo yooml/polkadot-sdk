@@ -15,22 +15,42 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use sp_runtime::traits::Hash;
-use std::{fs, path::PathBuf};
-
 /// Load a given wasm module and returns a wasm binary contents along with it's hash.
-/// Use the legacy compile_module as fallback, if the rust fixture does not exist yet.
+#[cfg(feature = "std")]
 pub fn compile_module<T>(
 	fixture_name: &str,
-) -> anyhow::Result<(Vec<u8>, <T::Hashing as Hash>::Output)>
+) -> anyhow::Result<(Vec<u8>, <T::Hashing as sp_runtime::traits::Hash>::Output)>
 where
 	T: frame_system::Config,
 {
-	let out_dir: PathBuf = env!("OUT_DIR").into();
-	let fixture_path = out_dir.join(format!("{fixture_name}.wasm"));
-	let binary = fs::read(fixture_path)?;
+	use sp_runtime::traits::Hash;
+	let out_dir: std::path::PathBuf = env!("OUT_DIR").into();
+	let fixture_path = out_dir.join(format!("{fixture_name}.polkavm"));
+	let binary = std::fs::read(fixture_path)?;
 	let code_hash = T::Hashing::hash(&binary);
 	Ok((binary, code_hash))
+}
+
+/// Fixtures used in runtime benchmarks.
+///
+/// We explicitly include those fixtures into the binary to make them
+/// available in no-std environments (runtime benchmarks).
+pub mod bench {
+	#[cfg(feature = "riscv")]
+	macro_rules! fixture {
+		($name: literal) => {
+			include_bytes!(concat!(env!("OUT_DIR"), "/", $name, ".polkavm"))
+		};
+	}
+	#[cfg(not(feature = "riscv"))]
+	macro_rules! fixture {
+		($name: literal) => {
+			&[]
+		};
+	}
+	pub const DUMMY: &[u8] = fixture!("dummy");
+	pub const NOOP: &[u8] = fixture!("noop");
+	pub const INSTR: &[u8] = fixture!("instr_benchmark");
 }
 
 #[cfg(test)]
@@ -38,8 +58,6 @@ mod test {
 	#[test]
 	fn out_dir_should_have_compiled_mocks() {
 		let out_dir: std::path::PathBuf = env!("OUT_DIR").into();
-		assert!(out_dir.join("dummy.wasm").exists());
-		#[cfg(feature = "riscv")]
 		assert!(out_dir.join("dummy.polkavm").exists());
 	}
 }

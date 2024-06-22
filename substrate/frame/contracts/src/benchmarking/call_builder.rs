@@ -16,13 +16,13 @@
 // limitations under the License.
 
 use crate::{
-	benchmarking::{Contract, WasmModule},
-	exec::{Ext, Key, Stack},
+	benchmarking::{default_deposit_limit, Contract, WasmModule},
+	exec::{ExportedFunction, Ext, Key, Stack},
 	storage::meter::Meter,
 	transient_storage::MeterEntry,
-	wasm::Runtime,
-	BalanceOf, Config, DebugBufferVec, Determinism, Error, ExecReturnValue, GasMeter, Origin,
-	Schedule, TypeInfo, WasmBlob, Weight,
+	wasm::{ApiVersion, PreparedCall, Runtime},
+	BalanceOf, Config, DebugBufferVec, Error, GasMeter, Origin, Schedule, TypeInfo, WasmBlob,
+	Weight,
 };
 use alloc::{vec, vec::Vec};
 use codec::{Encode, HasCompact};
@@ -31,19 +31,6 @@ use frame_benchmarking::benchmarking;
 use sp_core::Get;
 
 type StackExt<'a, T> = Stack<'a, T, WasmBlob<T>>;
-
-/// A prepared contract call ready to be executed.
-pub struct PreparedCall<'a, T: Config> {
-	func: wasmi::Func,
-	store: wasmi::Store<Runtime<'a, StackExt<'a, T>>>,
-}
-
-impl<'a, T: Config> PreparedCall<'a, T> {
-	pub fn call(mut self) -> ExecReturnValue {
-		let result = self.func.call(&mut self.store, &[], &mut []);
-		WasmBlob::<T>::process_result(self.store, result).unwrap()
-	}
-}
 
 /// A builder used to prepare a contract call.
 pub struct CallSetup<T: Config> {
@@ -55,7 +42,6 @@ pub struct CallSetup<T: Config> {
 	schedule: Schedule<T>,
 	value: BalanceOf<T>,
 	debug_message: Option<DebugBufferVec<T>>,
-	determinism: Determinism,
 	data: Vec<u8>,
 	transient_storage_size: u32,
 }
@@ -81,7 +67,7 @@ where
 		let dest = contract.account_id.clone();
 		let origin = Origin::from_account_id(contract.caller.clone());
 
-		let storage_meter = Meter::new(&origin, None, 0u32.into()).unwrap();
+		let storage_meter = Meter::new(&origin, default_deposit_limit::<T>(), 0u32.into()).unwrap();
 
 		// Whitelist contract account, as it is already accounted for in the call benchmark
 		benchmarking::add_to_whitelist(
@@ -103,7 +89,6 @@ where
 			schedule: T::Schedule::get(),
 			value: 0u32.into(),
 			debug_message: None,
-			determinism: Determinism::Enforced,
 			data: vec![],
 			transient_storage_size: 0,
 		}
@@ -111,7 +96,7 @@ where
 
 	/// Set the meter's storage deposit limit.
 	pub fn set_storage_deposit_limit(&mut self, balance: BalanceOf<T>) {
-		self.storage_meter = Meter::new(&self.origin, Some(balance), 0u32.into()).unwrap();
+		self.storage_meter = Meter::new(&self.origin, balance, 0u32.into()).unwrap();
 	}
 
 	/// Set the call's origin.
@@ -164,7 +149,6 @@ where
 			&self.schedule,
 			self.value,
 			self.debug_message.as_mut(),
-			self.determinism,
 		);
 		if self.transient_storage_size > 0 {
 			Self::with_transient_storage(&mut ext.0, self.transient_storage_size).unwrap();
@@ -177,9 +161,14 @@ where
 		ext: &'a mut StackExt<'a, T>,
 		module: WasmBlob<T>,
 		input: Vec<u8>,
-	) -> PreparedCall<'a, T> {
-		let (func, store) = module.bench_prepare_call(ext, input);
-		PreparedCall { func, store }
+	) -> PreparedCall<'a, StackExt<'a, T>> {
+		module
+			.prepare_call(
+				Runtime::new(ext, input),
+				ExportedFunction::Call,
+				ApiVersion::UnsafeNewest,
+			)
+			.unwrap()
 	}
 
 	/// Add transient_storage
@@ -209,12 +198,9 @@ where
 
 #[macro_export]
 macro_rules! memory(
-	($($bytes:expr,)*) => {
-		 vec![]
-		    .into_iter()
-		    $(.chain($bytes))*
-		    .collect::<Vec<_>>()
-	};
+	($($bytes:expr,)*) => {{
+		vec![].iter()$(.chain($bytes.iter()))*.cloned().collect::<Vec<_>>()
+	}};
 );
 
 #[macro_export]
@@ -231,6 +217,6 @@ macro_rules! build_runtime(
 		let $contract = setup.contract();
 		let input = setup.data();
 		let (mut ext, _) = setup.ext();
-		let mut $runtime = crate::wasm::Runtime::new(&mut ext, input);
+		let mut $runtime = crate::wasm::Runtime::<_, [u8]>::new(&mut ext, input);
 	};
 );

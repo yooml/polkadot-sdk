@@ -19,7 +19,7 @@
 #![no_main]
 
 use common::input;
-use uapi::{HostFn, HostFnImpl as api};
+use uapi::{HostFn, HostFnImpl as api, StorageFlags};
 
 #[no_mangle]
 #[polkavm_derive::polkavm_export]
@@ -37,13 +37,13 @@ pub extern "C" fn call() {
 	let value = &mut &mut value[..];
 	value[0] = 2u8;
 
-	api::set_storage(&key, value);
-	api::get_storage(&key, value).unwrap();
+	api::set_storage(StorageFlags::empty(), &key, value);
+	api::get_storage(StorageFlags::empty(), &key, value).unwrap();
 	assert!(value[0] == 2u8);
 
 	let input = [0u8; 0];
 	api::delegate_call(uapi::CallFlags::empty(), code_hash, &input, None).unwrap();
 
-	api::get_storage(&[1u8], value).unwrap();
+	api::get_storage(StorageFlags::empty(), &key, value).unwrap();
 	assert!(value[0] == 1u8);
 }

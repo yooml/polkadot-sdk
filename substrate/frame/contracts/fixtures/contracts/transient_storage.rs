@@ -20,7 +20,7 @@
 #![no_main]
 
 use common::unwrap_output;
-use uapi::{HostFn, HostFnImpl as api};
+use uapi::{HostFn, HostFnImpl as api, StorageFlags};
 
 #[no_mangle]
 #[polkavm_derive::polkavm_export]
@@ -31,28 +31,25 @@ pub extern "C" fn deploy() {}
 pub extern "C" fn call() {
 	const KEY: [u8; 32] = [1u8; 32];
 	const VALUE_1: [u8; 4] = [1u8; 4];
-	const VALUE_2: [u8; 4] = [2u8; 4];
-	const VALUE_3: [u8; 4] = [3u8; 4];
+	const VALUE_2: [u8; 5] = [2u8; 5];
+	const VALUE_3: [u8; 6] = [3u8; 6];
 
-	#[allow(deprecated)]
-	{
-		let existing = api::set_transient_storage(&KEY, &VALUE_1);
-		assert_eq!(existing, None);
-		assert_eq!(api::contains_transient_storage(&KEY), Some(VALUE_1.len() as _));
-		unwrap_output!(val, [0u8; 4], api::get_transient_storage, &KEY);
-		assert_eq!(**val, VALUE_1);
+	let existing = api::set_storage(StorageFlags::TRANSIENT, &KEY, &VALUE_1);
+	assert_eq!(existing, None);
+	assert_eq!(api::contains_storage(StorageFlags::TRANSIENT, &KEY), Some(VALUE_1.len() as _));
+	unwrap_output!(val, [0u8; 32], api::get_storage, StorageFlags::TRANSIENT, &KEY);
+	assert_eq!(**val, VALUE_1);
 
-		let existing = api::set_transient_storage(&KEY, &VALUE_2);
-		assert_eq!(existing, Some(VALUE_1.len() as _));
-		unwrap_output!(val, [0u8; 4], api::get_transient_storage, &KEY);
-		assert_eq!(**val, VALUE_2);
+	let existing = api::set_storage(StorageFlags::TRANSIENT, &KEY, &VALUE_2);
+	assert_eq!(existing, Some(VALUE_1.len() as _));
+	unwrap_output!(val, [0u8; 32], api::get_storage, StorageFlags::TRANSIENT, &KEY);
+	assert_eq!(**val, VALUE_2);
 
-		api::clear_transient_storage(&KEY);
-		assert_eq!(api::contains_transient_storage(&KEY), None);
+	assert_eq!(api::clear_storage(StorageFlags::TRANSIENT, &KEY), Some(VALUE_2.len() as _));
+	assert_eq!(api::contains_storage(StorageFlags::TRANSIENT, &KEY), None);
 
-		let existing = api::set_transient_storage(&KEY, &VALUE_3);
-		assert_eq!(existing, None);
-		unwrap_output!(val, [0u8; 32], api::take_transient_storage, &KEY);
-		assert_eq!(**val, VALUE_3);
-	}
+	let existing = api::set_storage(StorageFlags::TRANSIENT, &KEY, &VALUE_3);
+	assert_eq!(existing, None);
+	unwrap_output!(val, [0u8; 128], api::take_storage, StorageFlags::TRANSIENT, &KEY);
+	assert_eq!(**val, VALUE_3);
 }

@@ -20,7 +20,9 @@
 #![no_main]
 
 use common::input;
-use uapi::{HostFn, HostFnImpl as api};
+use uapi::{HostFn, HostFnImpl as api, StorageFlags};
+
+static BUFFER: [u8; 16 * 1024] = [0u8; 16 * 1024];
 
 #[no_mangle]
 #[polkavm_derive::polkavm_export]
@@ -34,10 +36,8 @@ pub extern "C" fn call() {
 		size2: u32,
 	);
 
-	let buffer = [0u8; 16 * 1024];
-
 	// Place a values in storage sizes are specified in the input buffer.
 	// We don't care about the contents of the storage item.
-	api::set_storage(&[1u8; 32], &buffer[0..size1 as _]);
-	api::set_storage(&[2u8; 32], &buffer[0..size2 as _]);
+	api::set_storage(StorageFlags::empty(), &[1u8; 32], &BUFFER[0..size1 as _]);
+	api::set_storage(StorageFlags::empty(), &[2u8; 32], &BUFFER[0..size2 as _]);
 }

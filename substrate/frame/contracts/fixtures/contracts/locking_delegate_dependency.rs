@@ -44,7 +44,7 @@ fn load_input(delegate_call: bool) {
 		},
 		// 3 = Terminate
 		3 => {
-			api::terminate_v1(&ALICE);
+			api::terminate(&ALICE);
 		},
 		// Everything else is a noop
 		_ => {},

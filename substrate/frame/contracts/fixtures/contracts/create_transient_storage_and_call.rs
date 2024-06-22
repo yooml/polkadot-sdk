@@ -20,7 +20,9 @@
 #![no_main]
 
 use common::input;
-use uapi::{HostFn, HostFnImpl as api};
+use uapi::{HostFn, HostFnImpl as api, StorageFlags};
+
+static DATA: [u8; 16 * 1024] = [0u8; 16 * 1024];
 
 #[no_mangle]
 #[polkavm_derive::polkavm_export]
@@ -36,13 +38,11 @@ pub extern "C" fn call() {
 		callee: [u8; 32],
 	);
 
-	let data = [0u8; 16 * 1024];
-	let value = &data[..len as usize];
-	#[allow(deprecated)]
-	api::set_transient_storage(buffer, value);
+	let value = &DATA[..len as usize];
+	api::set_storage(StorageFlags::TRANSIENT, buffer, value);
 
 	// Call the callee
-	api::call_v2(
+	api::call(
 		uapi::CallFlags::empty(),
 		callee,
 		0u64, // How much ref_time weight to devote for the execution. 0 = all.

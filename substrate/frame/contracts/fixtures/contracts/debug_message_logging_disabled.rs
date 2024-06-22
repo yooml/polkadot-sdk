@@ -20,7 +20,7 @@
 #![no_main]
 
 extern crate common;
-use uapi::{HostFn, HostFnImpl as api};
+use uapi::{HostFn, HostFnImpl as api, ReturnErrorCode};
 
 #[no_mangle]
 #[polkavm_derive::polkavm_export]
@@ -29,5 +29,5 @@ pub extern "C" fn deploy() {}
 #[no_mangle]
 #[polkavm_derive::polkavm_export]
 pub extern "C" fn call() {
-	api::debug_message(b"Hello World!").unwrap();
+	assert_eq!(api::debug_message(b"Hello World!"), Err(ReturnErrorCode::LoggingDisabled));
 }
