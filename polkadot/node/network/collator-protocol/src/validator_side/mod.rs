@@ -2044,26 +2044,27 @@ fn is_seconded_limit_reached(
 	relay_parent_state: &PerRelayParent,
 	para_id: &ParaId,
 ) -> bool {
-	// TODO: is this included in `known_allowed_relay_parents_under`
-	// Get the number of seconded + pending candidates for `para_id` at `relay_parent`
-	let seconded_and_pending =
-		&relay_parent_state.collations.seconded_and_pending_for_para(para_id);
 	// Get the number of claims for `para_id` at `relay_parent`
-	let claims_for_para =
-		&relay_parent_state.collations.claims_for_para(para_id) - seconded_and_pending;
+	let claims_for_para = relay_parent_state.collations.claims_for_para(para_id);
 
-	let seconded_and_pending_at_ancestors =
-		seconded_and_pending_for_para(implicit_view, per_relay_parent, &relay_parent, para_id);
+	let seconded_and_pending_at_ancestors = seconded_and_pending_for_para_in_view(
+		implicit_view,
+		per_relay_parent,
+		&relay_parent,
+		para_id,
+	);
 
 	claims_for_para >= seconded_and_pending_at_ancestors
 }
 
-fn seconded_and_pending_for_para(
+fn seconded_and_pending_for_para_in_view(
 	implicit_view: &ImplicitView,
 	per_relay_parent: &HashMap<Hash, PerRelayParent>,
 	relay_parent: &Hash,
 	para_id: &ParaId,
 ) -> usize {
+	// `known_allowed_relay_parents_under` returns all leaves within the view for the specified
+	// block hash including the block hash itself
 	implicit_view
 		.known_allowed_relay_parents_under(relay_parent, Some(*para_id))
 		.map(|ancestors| {
@@ -2089,7 +2090,7 @@ fn claim_queue_state(
 		.map(|para_id| {
 			(
 				*para_id,
-				seconded_and_pending_for_para(
+				seconded_and_pending_for_para_in_view(
 					implicit_view,
 					per_relay_parent,
 					relay_parent,
@@ -2126,7 +2127,7 @@ fn get_next_collation_to_fetch(
 ) -> Option<(PendingCollation, CollatorId)> {
 	let claim_queue_state =
 		claim_queue_state(&relay_parent, &state.per_relay_parent, &state.implicit_view)?;
-	let rp_state = state.per_relay_parent.get_mut(&relay_parent)?; //TODO: log?
+	let rp_state = state.per_relay_parent.get_mut(&relay_parent)?; // TODO: this is looked up twice
 
 	// If finished one does not match waiting_collation, then we already dequeued another fetch
 	// to replace it.
