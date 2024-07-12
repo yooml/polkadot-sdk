@@ -193,8 +193,6 @@ pub enum CollationStatus {
 	Fetching(ParaId),
 	/// We are waiting that a collation is being validated.
 	WaitingOnValidation(ParaId),
-	/// We have seconded a collation.
-	Seconded,
 }
 
 impl Default for CollationStatus {
@@ -312,38 +310,19 @@ impl Collations {
 	/// already be available in `self.claim_queue_state`.
 	pub(super) fn pick_a_collation_to_fetch(
 		&mut self,
-		group_assignments: &Vec<ParaId>,
 		claim_queue_state: Vec<(bool, ParaId)>,
 	) -> Option<(PendingCollation, CollatorId)> {
 		gum::trace!(
 			target: LOG_TARGET,
 			waiting_queue=?self.waiting_queue,
 			claims_per_para=?self.claims_per_para,
-			?group_assignments,
 			"Pick a collation to fetch."
 		);
-
-		let mut pending_for_para = match self.status {
-			CollationStatus::Waiting => None,
-			CollationStatus::Fetching(para_id) => Some(para_id),
-			CollationStatus::WaitingOnValidation(para_id) => Some(para_id),
-			CollationStatus::Seconded => None,
-		};
 
 		for (fulfilled, assignment) in claim_queue_state {
 			// if this assignment has been already fulfilled - move on
 			if fulfilled {
 				continue
-			}
-
-			// if there is a pending fetch for this assignment, we should consider it satisfied and
-			// proceed with the next
-			if let Some(pending_for) = pending_for_para {
-				if pending_for == assignment {
-					// the pending item should be used only once
-					pending_for_para = None;
-					continue
-				}
 			}
 
 			// we have found and unfulfilled assignment - try to fulfill it

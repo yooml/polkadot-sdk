@@ -1184,11 +1184,6 @@ where
 			// the new collation immediately
 			fetch_collation(sender, state, pending_collation, collator_id).await?;
 		},
-		CollationStatus::Seconded => {
-			// Limit is not reached (checked with `is_seconded_limit_reached` before the match
-			// expression), it's allowed to second another collation.
-			fetch_collation(sender, state, pending_collation, collator_id).await?;
-		},
 	}
 
 	Ok(())
@@ -1444,7 +1439,7 @@ async fn process_msg<Context>(
 				}
 
 				if let Some(rp_state) = state.per_relay_parent.get_mut(&parent) {
-					rp_state.collations.status = CollationStatus::Seconded;
+					rp_state.collations.status = CollationStatus::Waiting;
 					rp_state.collations.note_seconded(para_id);
 				}
 
@@ -2150,8 +2145,5 @@ fn get_next_collation_to_fetch(
 		}
 	}
 	rp_state.collations.status = CollationStatus::Waiting;
-	let group_assignments = &rp_state.assignment.current;
-	rp_state
-		.collations
-		.pick_a_collation_to_fetch(&group_assignments, claim_queue_state)
+	rp_state.collations.pick_a_collation_to_fetch(claim_queue_state)
 }
