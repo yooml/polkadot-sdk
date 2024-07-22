@@ -766,9 +766,9 @@ dependencies = [
 
 [[package]]
 name = "assert_cmd"
-version = "2.0.12"
+version = "2.0.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "88903cb14723e4d4003335bb7f8a14f27691649105346a0f0957466c096adfe6"
+checksum = "ed72493ac66d5804837f480ab3766c72bdfab91a65e565fc54fa9e42db0073a8"
 dependencies = [
  "anstyle",
  "bstr",
@@ -6053,15 +6053,26 @@ dependencies = [
  "Inflector",
  "cfg-expr",
  "derive-syn-parse",
+ "docify",
  "expander",
+ "frame-support",
  "frame-support-procedural-tools",
+ "frame-system",
  "itertools 0.11.0",
  "macro_magic",
+ "parity-scale-codec",
+ "pretty_assertions",
  "proc-macro-warning 1.0.0",
  "proc-macro2 1.0.82",
  "quote 1.0.36",
  "regex",
+ "scale-info",
+ "sp-core",
  "sp-crypto-hashing",
+ "sp-io",
+ "sp-metadata-ir",
+ "sp-runtime",
+ "static_assertions",
  "syn 2.0.61",
 ]
 
@@ -7686,9 +7697,9 @@ checksum = "884e2677b40cc8c339eaefcb701c32ef1fd2493d71118dc0ca4b6a736c93bd67"
 
 [[package]]
 name = "libc"
-version = "0.2.153"
+version = "0.2.155"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9c198f91728a82281a64e1f4f9eeb25d82cb32a5de251c6bd1b5154d63a8e7bd"
+checksum = "97b3888a4aecf77e811145cadf6eef5901f4782c53886191b2f693f24761847c"
 
 [[package]]
 name = "libflate"
@@ -20919,6 +20930,7 @@ dependencies = [
  "parity-scale-codec",
  "platforms",
  "polkadot-sdk",
+ "pretty_assertions",
  "rand",
  "regex",
  "sc-service-test",
