@@ -1,4 +1,18 @@
-# Statement store
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/paritytech/polkadot-sdk/rzadp/readmes/docs/images/Polkadot_Logo_Horizontal_Pink_BlackOnWhite.png" alt="Polkadot logo" width="200">
+
+# Substrate State Machine
+
+This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-sdk/).
+
+</div>
+
+## About
+
+This crate contains primitives related to the statement store.
+
+## Statement store
 
 Statement store is an off-chain data-store for signed statements accessible via RPC and OCW.
 
@@ -42,7 +56,7 @@ Formally, `Statement` is equivalent to the type `Vec<Field>` and `Field` is the 
 - 2: `Secp256k1Ecdsa { signature: [u8; 65], signer: [u8; 33] )`
 - 3: `OnChain { who: [u8; 32], block_hash: [u8; 32], event_index: u64 }`
 
-## Potential uses
+### Potential uses
 
 Potential use-cases are various and include:
 - ring-signature aggregation;
@@ -52,5 +66,14 @@ Potential use-cases are various and include:
 - publication of preimage data whose hash is referenced on-chain;
 - effective transferal of fee payment to a second-party.
 
+## Documentation
 
-License: Apache-2.0
+The reference about this crate can be found [here](https://paritytech.github.io/polkadot-sdk/master/sp_statement_store).
+
+In order to learn about Polkadot SDK, head over to the [Polkadot SDK Developer Documentation](https://paritytech.github.io/polkadot-sdk/master/polkadot_sdk_docs/index.html).
+
+To learn about Polkadot, visit the [Polkadot.network](https://polkadot.network/) website.
+
+## License
+
+This crate is [Apache 2.0 licensed](https://spdx.org/licenses/Apache-2.0.html).

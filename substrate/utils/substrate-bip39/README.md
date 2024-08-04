@@ -1,4 +1,14 @@
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/paritytech/polkadot-sdk/rzadp/readmes/docs/images/Polkadot_Logo_Horizontal_Pink_BlackOnWhite.png" alt="Polkadot logo" width="200">
+
 # Substrate BIP39
+
+This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-sdk/).
+
+</div>
+
+## About
 
 This is a crate for deriving secret keys for Ristretto compressed Ed25519 (should be compatible with Ed25519 at this
 time) from BIP39 phrases.
@@ -53,3 +63,15 @@ balance with empty password, while the funds proper are stored on an address tha
 Because there are hardware wallets that use a single phrase for the entire device, and operate multiple accounts on
 multiple networks using that. A completely different wordlist would make their life much harder when it comes to
 providing future Substrate support.
+
+## Documentation
+
+The reference about this crate can be found [here](https://paritytech.github.io/polkadot-sdk/master/substrate_bip39).
+
+In order to learn about Polkadot SDK, head over to the [Polkadot SDK Developer Documentation](https://paritytech.github.io/polkadot-sdk/master/polkadot_sdk_docs/index.html).
+
+To learn about Polkadot, visit the [Polkadot.network](https://polkadot.network/) website.
+
+## License
+
+This crate is [Apache 2.0 licensed](https://spdx.org/licenses/Apache-2.0.html).

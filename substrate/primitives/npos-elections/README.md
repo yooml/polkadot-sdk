@@ -1,4 +1,14 @@
-# sp-npos-elections
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/paritytech/polkadot-sdk/rzadp/readmes/docs/images/Polkadot_Logo_Horizontal_Pink_BlackOnWhite.png" alt="Polkadot logo" width="200">
+
+# NPoS Election Algorithm Primitives
+
+This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-sdk/).
+
+</div>
+
+## About
 
 A set of election algorithms to be used with a Substrate runtime, typically within the staking sub-system. Notable
 implementation include:
@@ -50,7 +60,16 @@ voters, therefore it is stored as a mapping called `SupportMap`.
 Moreover, the support is built from absolute backing values, not ratios like the example above. A struct similar to
 `Assignment` that has stake value instead of ratios is called an `StakedAssignment`.
 
-
 More information can be found at: https://arxiv.org/abs/2004.12990
 
-License: Apache-2.0
+## Documentation
+
+The reference about this crate can be found [here](https://paritytech.github.io/polkadot-sdk/master/sp_npos_elections).
+
+In order to learn about Polkadot SDK, head over to the [Polkadot SDK Developer Documentation](https://paritytech.github.io/polkadot-sdk/master/polkadot_sdk_docs/index.html).
+
+To learn about Polkadot, visit the [Polkadot.network](https://polkadot.network/) website.
+
+## License
+
+This crate is [Apache 2.0 licensed](https://spdx.org/licenses/Apache-2.0.html).

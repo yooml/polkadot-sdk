@@ -1,11 +1,21 @@
-Substrate runtime interface
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/paritytech/polkadot-sdk/rzadp/readmes/docs/images/Polkadot_Logo_Horizontal_Pink_BlackOnWhite.png" alt="Polkadot logo" width="200">
+
+# Substrate Runtime Interface
+
+This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-sdk/).
+
+</div>
+
+## About
 
 This crate provides types, traits and macros around runtime interfaces. A runtime interface is a fixed interface between
 a Substrate runtime and a Substrate node. For a native runtime the interface maps to a direct function call of the
 implementation. For a wasm runtime the interface maps to an external function call. These external functions are
 exported by the wasm executor and they map to the same implementation as the native calls.
 
-# Using a type in a runtime interface
+## Using a type in a runtime interface
 <!-- markdown-link-check-disable -->
 Any type that should be used in a runtime interface as argument or return value needs to implement [`RIType`]. The
 associated type
@@ -31,14 +41,14 @@ For custom types, we provide the
 define how a type is passed between the wasm runtime and the node. Each strategy also provides a derive macro to
 simplify the implementation.
 
-# Performance
+## Performance
 
 To not waste any more performance when calling into the node, not all types are SCALE encoded when being passed as
 arguments between the wasm runtime and the node. For most types that are raw bytes like `Vec<u8>`, `[u8]` or `[u8; N]`
 we pass them directly, without SCALE encoding them in front of. The implementation of [`RIType`] each type provides more
 information on how the data is passed.
 
-# Declaring a runtime interface
+## Declaring a runtime interface
 
 Declaring a runtime interface is similar to declaring a trait in Rust:
 
@@ -54,7 +64,7 @@ trait RuntimeInterface {
 For more information on declaring a runtime interface, see
 [`#[runtime_interface]`](https://docs.rs/sp-runtime-interface/latest/sp_runtime_interface/attr.runtime_interface.html).
 
-# FFI type and conversion
+## FFI type and conversion
 
 The following table documents how values of types are passed between the wasm and the host side and how they are
 converted into the corresponding type.
@@ -86,4 +96,14 @@ converted into the corresponding type.
 
 `Identity` means that the value is converted directly into the corresponding FFI type.
 
-License: Apache-2.0
+## Documentation
+
+The reference about this crate can be found [here](https://paritytech.github.io/polkadot-sdk/master/sp_runtime_interface).
+
+In order to learn about Polkadot SDK, head over to the [Polkadot SDK Developer Documentation](https://paritytech.github.io/polkadot-sdk/master/polkadot_sdk_docs/index.html).
+
+To learn about Polkadot, visit the [Polkadot.network](https://polkadot.network/) website.
+
+## License
+
+This crate is [Apache 2.0 licensed](https://spdx.org/licenses/Apache-2.0.html).

@@ -1,9 +1,19 @@
-# Tipping Pallet ( pallet-tips )
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/paritytech/polkadot-sdk/rzadp/readmes/docs/images/Polkadot_Logo_Horizontal_Pink_BlackOnWhite.png" alt="Polkadot logo" width="200">
+
+# Tipping Pallet
+
+This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-sdk/).
+
+</div>
+
+## About
+
+This crate contains a subsystem to allow for an agile "tipping" process, whereby a reward may be given without first
+having a pre-determined stakeholder group come to consensus on how much should be paid.
 
 **Note :: This pallet is tightly coupled to pallet-treasury**
-
-A subsystem to allow for an agile "tipping" process, whereby a reward may be given without first
-having a pre-determined stakeholder group come to consensus on how much should be paid.
 
 A group of `Tippers` is determined through the config `Config`. After half of these have declared
 some amount that they believe a particular reported reason deserves, then a countdown period is
@@ -31,3 +41,15 @@ any finders fee, in case of a public (and bonded) original report.
 - `tip` - Declare or redeclare an amount to tip for a particular reason.
 - `close_tip` - Close and pay out a tip.
 - `slash_tip` - Remove and slash an already-open tip.
+
+## Documentation
+
+The reference about this crate can be found [here](https://paritytech.github.io/polkadot-sdk/master/pallet_tips).
+
+In order to learn about Polkadot SDK, head over to the [Polkadot SDK Developer Documentation](https://paritytech.github.io/polkadot-sdk/master/polkadot_sdk_docs/index.html).
+
+To learn about Polkadot, visit the [Polkadot.network](https://polkadot.network/) website.
+
+## License
+
+This crate is [Apache 2.0 licensed](https://spdx.org/licenses/Apache-2.0.html).

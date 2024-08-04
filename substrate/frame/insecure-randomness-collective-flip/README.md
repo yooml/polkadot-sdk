@@ -1,11 +1,21 @@
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/paritytech/polkadot-sdk/rzadp/readmes/docs/images/Polkadot_Logo_Horizontal_Pink_BlackOnWhite.png" alt="Polkadot logo" width="200">
+
+# Randomness Module
+
+This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-sdk/).
+
+</div>
+
 # DO NOT USE IN PRODUCTION
 
 The produced values do not fulfill the cryptographic requirements for random numbers. Should not be used for high-stake
 production use-cases.
 
-# Randomness Module
+## About
 
-The Randomness Collective Flip module provides a
+This crate contains The Randomness Collective Flip module, which provides a
 [`random`](https://docs.rs/pallet-insecure-randomness-collective-flip/latest/pallet_insecure_randomness_collective_flip/struct.Module.html#method.random)
 function that generates low-influence random values based on the block hashes from the previous `81` blocks.
 Low-influence randomness can be useful when defending against relatively weak adversaries. Using this pallet as a
@@ -51,4 +61,14 @@ pub mod pallet {
 }
 ```
 
-License: Apache-2.0
+## Documentation
+
+The reference about this crate can be found [here](https://paritytech.github.io/polkadot-sdk/master/pallet_insecure_randomness_collective_flip).
+
+In order to learn about Polkadot SDK, head over to the [Polkadot SDK Developer Documentation](https://paritytech.github.io/polkadot-sdk/master/polkadot_sdk_docs/index.html).
+
+To learn about Polkadot, visit the [Polkadot.network](https://polkadot.network/) website.
+
+## License
+
+This crate is [Apache 2.0 licensed](https://spdx.org/licenses/Apache-2.0.html).

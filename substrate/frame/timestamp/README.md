@@ -1,6 +1,16 @@
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/paritytech/polkadot-sdk/rzadp/readmes/docs/images/Polkadot_Logo_Horizontal_Pink_BlackOnWhite.png" alt="Polkadot logo" width="200">
+
 # Timestamp Module
 
-The Timestamp module provides functionality to get and set the on-chain time.
+This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-sdk/).
+
+</div>
+
+## About
+
+This crate contains the Timestamp module, provides functionality to get and set the on-chain time.
 
 - [`timestamp::Config`](https://docs.rs/pallet-timestamp/latest/pallet_timestamp/pallet/trait.Config.html)
 - [`Call`](https://docs.rs/pallet-timestamp/latest/pallet_timestamp/pallet/enum.Call.html)
@@ -80,4 +90,14 @@ the Timestamp module for session management.
 
 - [Session](https://docs.rs/pallet-session/latest/pallet_session/)
 
-License: Apache-2.0
+## Documentation
+
+The reference about this crate can be found [here](https://paritytech.github.io/polkadot-sdk/master/pallet_timestamp).
+
+In order to learn about Polkadot SDK, head over to the [Polkadot SDK Developer Documentation](https://paritytech.github.io/polkadot-sdk/master/polkadot_sdk_docs/index.html).
+
+To learn about Polkadot, visit the [Polkadot.network](https://polkadot.network/) website.
+
+## License
+
+This crate is [Apache 2.0 licensed](https://spdx.org/licenses/Apache-2.0.html).

@@ -1,6 +1,16 @@
-# sc-telemetry
+<div align="center">
 
-Substrate's client telemetry is a part of Substrate that allows ingesting telemetry data
+<img src="https://raw.githubusercontent.com/paritytech/polkadot-sdk/rzadp/readmes/docs/images/Polkadot_Logo_Horizontal_Pink_BlackOnWhite.png" alt="Polkadot logo" width="200">
+
+# Substrate Telemetry
+
+This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-sdk/).
+
+</div>
+
+## About
+
+This crate contains client telemetry, that allows ingesting telemetry data
 with for example [Polkadot telemetry](https://github.com/paritytech/substrate-telemetry).
 
 It works using Tokio's [tracing](https://github.com/tokio-rs/tracing/) library. The telemetry
@@ -18,4 +28,14 @@ This handle can be cloned and passed around. It uses an asynchronous channel to 
 the running [`TelemetryWorker`] dedicated to registration. Registering can happen at any point
 in time during the process execution.
 
-License: GPL-3.0-or-later WITH Classpath-exception-2.0
+## Documentation
+
+The reference about this crate can be found [here](https://paritytech.github.io/polkadot-sdk/master/sc_telemetry).
+
+In order to learn about Polkadot SDK, head over to the [Polkadot SDK Developer Documentation](https://paritytech.github.io/polkadot-sdk/master/polkadot_sdk_docs/index.html).
+
+To learn about Polkadot, visit the [Polkadot.network](https://polkadot.network/) website.
+
+## License
+
+This crate is [GPL 3.0 licensed](https://spdx.org/licenses/GPL-3.0-or-later.html) with [Classpath-exception-2.0](https://spdx.org/licenses/Classpath-exception-2.0.html).

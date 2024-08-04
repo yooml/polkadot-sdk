@@ -1,8 +1,18 @@
-Substrate transaction pool implementation.
+<div align="center">
 
-License: GPL-3.0-or-later WITH Classpath-exception-2.0
+<img src="https://raw.githubusercontent.com/paritytech/polkadot-sdk/rzadp/readmes/docs/images/Polkadot_Logo_Horizontal_Pink_BlackOnWhite.png" alt="Polkadot logo" width="200">
 
-# Problem Statement
+# Substrate Transaction Pool
+
+This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-sdk/).
+
+</div>
+
+## About
+
+This crate contains the implementation of Substrate transaction pool.
+
+## Problem Statement
 
 The transaction pool is responsible for maintaining a set of transactions that
 possible to include by block authors in upcoming blocks. Transactions are received
@@ -47,7 +57,7 @@ chain re-organized to).
 Transaction pool should also offer a way of tracking transaction lifecycle in the
 pool, it's broadcasting status, block inclusion, finality, etc.
 
-## Transaction Validity details
+### Transaction Validity details
 
 Information retrieved from the runtime are encapsulated in the `TransactionValidity`
 type.
@@ -76,7 +86,7 @@ The runtime is expected to return these values in a deterministic fashion. Calli
 the API multiple times given exactly the same state must return same results.
 Field-specific rules are described below.
 
-### `requires` / `provides`
+#### `requires` / `provides`
 
 These two fields contain a set of `TransactionTag`s (opaque blobs) associated with
 a given transaction. This is a mechanism for the runtime to be able to
@@ -102,7 +112,7 @@ Note the process of including transactions to a block is basically building the 
 then selecting "the best" source vertex (transaction) with all tags satisfied and
 removing it from that graph.
 
-#### Examples
+##### Examples
 
 - A transaction in Bitcoin-like chain will `provide` generated UTXOs and will `require`
   UTXOs it is still awaiting for (note that it's not necessarily all require inputs,
@@ -112,7 +122,7 @@ removing it from that graph.
   (as one tag), and will `require` `(sender, nonce - 1)` in case
   `on_chain_nonce < nonce - 1`.
 
-#### Rules & caveats
+##### Rules & caveats
 
 - `provides` must not be empty
 - transactions with an overlap in `provides` tags are mutually exclusive
@@ -128,7 +138,7 @@ removing it from that graph.
   (for instance UTXO transaction gets in, but since we don't store spent outputs
   it will be valid again, awaiting the same inputs/tags to be satisfied)
 
-### `priority`
+#### `priority`
 
 Transaction priority describes importance of the transaction relative to other transactions
 in the pool. Block authors can expect benefiting from including such transactions
@@ -143,7 +153,7 @@ choosing the ones with highest priority to include to the next block first.
 `priority` can be any number between `0` (lowest inclusion priority) to `u64::MAX`
 (highest inclusion priority).
 
-#### Rules & caveats
+##### Rules & caveats
 
 - `priority` of transaction may change over time
 - on-chain conditions may affect `priority`
@@ -152,20 +162,20 @@ choosing the ones with highest priority to include to the next block first.
   of a subtree rooted at that transaction and compare that instead (i.e. even though
   the transaction itself has lower `priority` it "unlocks" other high priority transactions).
 
-### `longevity`
+#### `longevity`
 
 Longevity describes how long (in blocks) the transaction is expected to be
 valid. This parameter only gives a hint to the transaction pool how long
 current transaction may still be valid. Note that it does not guarantee
 the transaction is valid all that time though.
 
-#### Rules & caveats
+##### Rules & caveats
 
 - `longevity` of transaction may change over time
 - on-chain conditions may affect `longevity`
 - after `longevity` lapses, the transaction may still be valid
 
-### `propagate`
+#### `propagate`
 
 This parameter instructs the pool propagate/gossip a transaction to node peers.
 By default this should be `true`, however in some cases it might be undesirable
@@ -174,7 +184,7 @@ produced by block authors in offchain workers (DoS) or risking being front
 ran by someone else after finding some non trivial solution or equivocation,
 etc.
 
-### 'TransactionSource`
+#### 'TransactionSource`
 
 To make it possible for the runtime to distinguish if the transaction that is
 being validated was received over the network or submitted using local RPC or
@@ -186,7 +196,7 @@ This can be used by runtime developers to quickly reject transactions that for
 instance are not expected to be gossiped in the network.
 
 
-### `Invalid` transaction
+#### `Invalid` transaction
 
 In case the runtime returns an `Invalid` error it means the transaction cannot
 be added to a block at all. Extracting the actual reason of invalidity gives
@@ -197,13 +207,13 @@ Invalidity might also be temporary. In case of `ExhaustsResources` the
 transaction does not fit to the current block, but it might be okay for the next
 one.
 
-### `Unknown` transaction
+#### `Unknown` transaction
 
 In case of `Unknown` validity, the runtime cannot determine if the transaction
 is valid or not in current block. However this situation might be temporary, so
 it is expected for the transaction to be retried in the future.
 
-# Implementation
+## Implementation
 
 An ideal transaction pool should be storing only transactions that are considered
 valid by the runtime at current best imported block.
@@ -235,7 +245,7 @@ in a single block, validating the entire pool on every block might not be
 feasible. This means that the actual implementation might need to take some
 shortcuts.
 
-## Suggestions & caveats
+### Suggestions & caveats
 
 1. The validity of a transaction should not change significantly from block to
    block. I.e. changes in validity should happen predictably, e.g. `longevity`
@@ -265,7 +275,7 @@ shortcuts.
 1. Note that import notification is not reliable - you might not receive a
    notification about every imported block.
 
-## Potential implementation ideas
+### Potential implementation ideas
 
 1. Block authors remove transactions from the pool when they author a block. We
    still store them around to re-import in case the block does not end up
@@ -307,7 +317,7 @@ simply broadcasting all/some transactions to all/selected peers. An Ethereum's
 [EIP-2464](https://github.com/ethereum/EIPs/blob/5b9685bb9c7ba0f5f921e4d3f23504f7ef08d5b1/EIPS/eip-2464.md)
 might be a good first approach to reduce transaction gossip.
 
-# Current implementation
+## Current implementation
 
 Current implementation of the pool is a result of experiences from Ethereum's
 pool implementation, but also has some warts coming from the learning process of
@@ -366,3 +376,15 @@ Runtime calls to verify transactions are performed from a separate (limited)
 thread pool to avoid interfering too much with other subsystems of the node. We
 definitely don't want to have all cores validating network transactions, because
 all of these transactions need to be considered untrusted (potentially DoS).
+
+## Documentation
+
+The reference about this crate can be found [here](https://paritytech.github.io/polkadot-sdk/master/sc_transaction_pool).
+
+In order to learn about Polkadot SDK, head over to the [Polkadot SDK Developer Documentation](https://paritytech.github.io/polkadot-sdk/master/polkadot_sdk_docs/index.html).
+
+To learn about Polkadot, visit the [Polkadot.network](https://polkadot.network/) website.
+
+## License
+
+This crate is [GPL 3.0 licensed](https://spdx.org/licenses/GPL-3.0-or-later.html) with [Classpath-exception-2.0](https://spdx.org/licenses/Classpath-exception-2.0.html).

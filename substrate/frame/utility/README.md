@@ -1,5 +1,16 @@
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/paritytech/polkadot-sdk/rzadp/readmes/docs/images/Polkadot_Logo_Horizontal_Pink_BlackOnWhite.png" alt="Polkadot logo" width="200">
+
 # Utility Module
-A stateless module with helpers for dispatch management which does no re-authentication.
+
+This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-sdk/).
+
+</div>
+
+## About
+
+This crate contains a stateless module with helpers for dispatch management which does no re-authentication.
 
 - [`utility::Config`](https://docs.rs/pallet-utility/latest/pallet_utility/pallet/trait.Config.html)
 - [`Call`](https://docs.rs/pallet-utility/latest/pallet_utility/pallet/enum.Call.html)
@@ -32,7 +43,14 @@ filtered by any proxy.
 #### For pseudonymal dispatch
 - `as_derivative` - Dispatch a call from a derivative signed origin.
 
-[`Call`]: ./enum.Call.html
-[`Config`]: ./trait.Config.html
+## Documentation
 
-License: Apache-2.0
+The reference about this crate can be found [here](https://paritytech.github.io/polkadot-sdk/master/pallet_utility).
+
+In order to learn about Polkadot SDK, head over to the [Polkadot SDK Developer Documentation](https://paritytech.github.io/polkadot-sdk/master/polkadot_sdk_docs/index.html).
+
+To learn about Polkadot, visit the [Polkadot.network](https://polkadot.network/) website.
+
+## License
+
+This crate is [Apache 2.0 licensed](https://spdx.org/licenses/Apache-2.0.html).

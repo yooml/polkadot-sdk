@@ -1,11 +1,19 @@
-# asset-conversion
+<div align="center">
 
-## A swap pallet
+<img src="https://raw.githubusercontent.com/paritytech/polkadot-sdk/rzadp/readmes/docs/images/Polkadot_Logo_Horizontal_Pink_BlackOnWhite.png" alt="Polkadot logo" width="200">
 
-This pallet allows assets to be converted from one type to another by means of a constant product formula.
+# Asset Conversion Pallet
+
+This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-sdk/).
+
+</div>
+
+## About
+
+This crate contains the Asset Conversion pallet, which allows assets to be converted from one type to another by means of a constant product formula.
 The pallet based is based on [Uniswap V2](https://github.com/Uniswap/v2-core) logic.
 
-### Overview
+## Overview
 
 This pallet allows you to:
 
@@ -16,10 +24,14 @@ This pallet allows you to:
   - query for an exchange price via a new runtime call endpoint
   - query the size of a liquidity pool.
 
-Please see the rust module documentation for full details:
+## Documentation
 
-`cargo doc -p pallet-asset-conversion --open`
+The reference about this crate can be found [here](https://paritytech.github.io/polkadot-sdk/master/pallet_asset_conversion).
 
-### License
+In order to learn about Polkadot SDK, head over to the [Polkadot SDK Developer Documentation](https://paritytech.github.io/polkadot-sdk/master/polkadot_sdk_docs/index.html).
 
-License: Apache-2.0
+To learn about Polkadot, visit the [Polkadot.network](https://polkadot.network/) website.
+
+## License
+
+This crate is [Apache 2.0 licensed](https://spdx.org/licenses/Apache-2.0.html).

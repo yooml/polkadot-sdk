@@ -1,8 +1,20 @@
-# Bounties Module ( pallet-bounties )
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/paritytech/polkadot-sdk/rzadp/readmes/docs/images/Polkadot_Logo_Horizontal_Pink_BlackOnWhite.png" alt="Polkadot logo" width="200">
+
+# Bounties Module
+
+This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-sdk/).
+
+</div>
+
+## About
+
+This crate contains a pallet to manage bounties.
 
 ## Bounty
 
-> NOTE: This pallet is tightly coupled with pallet-treasury.
+> NOTE: This pallet is tightly coupled with `pallet-treasury`.
 
 A Bounty Spending is a reward for a specified body of work - or specified set of objectives -
 that needs to be executed for a predefined Treasury amount to be paid out. A curator is assigned
@@ -62,3 +74,15 @@ Bounty protocol:
 - `claim_bounty` - Claim a specific bounty amount from the Payout Address.
 - `unassign_curator` - Unassign an accepted curator from a specific earmark.
 - `close_bounty` - Cancel the earmark for a specific treasury amount and close the bounty.
+
+## Documentation
+
+The reference about this crate can be found [here](https://paritytech.github.io/polkadot-sdk/master/pallet_bounties).
+
+In order to learn about Polkadot SDK, head over to the [Polkadot SDK Developer Documentation](https://paritytech.github.io/polkadot-sdk/master/polkadot_sdk_docs/index.html).
+
+To learn about Polkadot, visit the [Polkadot.network](https://polkadot.network/) website.
+
+## License
+
+This crate is [Apache 2.0 licensed](https://spdx.org/licenses/Apache-2.0.html).

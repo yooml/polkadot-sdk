@@ -1,6 +1,16 @@
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/paritytech/polkadot-sdk/rzadp/readmes/docs/images/Polkadot_Logo_Horizontal_Pink_BlackOnWhite.png" alt="Polkadot logo" width="200">
+
 # Treasury Pallet
 
-The Treasury pallet provides a "pot" of funds that can be managed by stakeholders in the system and
+This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-sdk/).
+
+</div>
+
+## About
+
+This crate contains a pallet, which provides a "pot" of funds that can be managed by stakeholders in the system and
 a structure for making spending proposals from this pot.
 
 ## Overview
@@ -37,3 +47,15 @@ General spending/proposal protocol:
 - `check_status` - Check the status of the spend and remove it from the storage
   if processed
 - `void_spend` - Void previously approved spend
+
+## Documentation
+
+The reference about this crate can be found [here](https://paritytech.github.io/polkadot-sdk/master/pallet_treasury).
+
+In order to learn about Polkadot SDK, head over to the [Polkadot SDK Developer Documentation](https://paritytech.github.io/polkadot-sdk/master/polkadot_sdk_docs/index.html).
+
+To learn about Polkadot, visit the [Polkadot.network](https://polkadot.network/) website.
+
+## License
+
+This crate is [Apache 2.0 licensed](https://spdx.org/licenses/Apache-2.0.html).

@@ -1,4 +1,14 @@
-Polite gossiping.
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/paritytech/polkadot-sdk/rzadp/readmes/docs/images/Polkadot_Logo_Horizontal_Pink_BlackOnWhite.png" alt="Polkadot logo" width="200">
+
+# Substrate Network Gossip
+
+This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-sdk/).
+
+</div>
+
+## About
 
 This crate provides gossiping capabilities on top of a network.
 
@@ -12,7 +22,7 @@ in an opaque way. Consensus code can invoke `broadcast_topic` to attempt to send
 under a single topic to all peers who don't have them yet, and `send_topic` to
 send all messages under a single topic to a specific peer.
 
-# Usage
+## Usage
 
 - Implement the `Network` trait, representing the low-level networking primitives. It is
   already implemented on `sc_network::NetworkService`.
@@ -22,7 +32,7 @@ send all messages under a single topic to a specific peer.
 - Use the methods of the `GossipEngine` in order to send out messages and receive incoming
   messages.
 
-# What is a validator?
+## What is a validator?
 
 The primary role of a `Validator` is to process incoming messages from peers, and decide
 whether to discard them or process them. It also decides whether to re-broadcast the message.
@@ -38,4 +48,14 @@ opens the door for neighbor status packets to be baked into the gossip protocol.
 These status packets will typically contain light pieces of information
 used to inform peers of a current view of protocol state.
 
-License: GPL-3.0-or-later WITH Classpath-exception-2.0
+## Documentation
+
+The reference about this crate can be found [here](https://paritytech.github.io/polkadot-sdk/master/sc_network_gossip).
+
+In order to learn about Polkadot SDK, head over to the [Polkadot SDK Developer Documentation](https://paritytech.github.io/polkadot-sdk/master/polkadot_sdk_docs/index.html).
+
+To learn about Polkadot, visit the [Polkadot.network](https://polkadot.network/) website.
+
+## License
+
+This crate is [GPL 3.0 licensed](https://spdx.org/licenses/GPL-3.0-or-later.html) with [Classpath-exception-2.0](https://spdx.org/licenses/Classpath-exception-2.0.html).

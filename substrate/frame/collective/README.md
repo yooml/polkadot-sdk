@@ -1,4 +1,16 @@
-Collective system: Members of a set of account IDs can make their collective feelings known
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/paritytech/polkadot-sdk/rzadp/readmes/docs/images/Polkadot_Logo_Horizontal_Pink_BlackOnWhite.png" alt="Polkadot logo" width="200">
+
+# Collective Pallet
+
+This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-sdk/).
+
+</div>
+
+## About
+
+This crate contains the Collective pallet, in which members of a set of account IDs can make their collective feelings known
 through dispatched calls from one of two specialized origins.
 
 The membership can be provided in one of two ways: either directly, using the Root-dispatchable
@@ -22,4 +34,14 @@ abstentions and the proposal is executed if there are enough approvals counting 
 
 If there are not, or if no prime member is set, then the motion is dropped without being executed.
 
-License: Apache-2.0
+## Documentation
+
+The reference about this crate can be found [here](https://paritytech.github.io/polkadot-sdk/master/pallet_collective).
+
+In order to learn about Polkadot SDK, head over to the [Polkadot SDK Developer Documentation](https://paritytech.github.io/polkadot-sdk/master/polkadot_sdk_docs/index.html).
+
+To learn about Polkadot, visit the [Polkadot.network](https://polkadot.network/) website.
+
+## License
+
+This crate is [Apache 2.0 licensed](https://spdx.org/licenses/Apache-2.0.html).

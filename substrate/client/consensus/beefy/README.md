@@ -1,4 +1,17 @@
-# BEEFY
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/paritytech/polkadot-sdk/rzadp/readmes/docs/images/Polkadot_Logo_Horizontal_Pink_BlackOnWhite.png" alt="Polkadot logo" width="200">
+
+# BEEFY Consensus
+
+This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-sdk/).
+
+</div>
+
+## About
+
+This crate contains the BEEFY consensus.
+
 **BEEFY** (**B**ridge **E**fficiency **E**nabling **F**inality **Y**ielder) is a secondary
 protocol running along GRANDPA Finality to support efficient bridging with non-Substrate
 blockchains, currently mainly ETH mainnet.
@@ -14,21 +27,21 @@ Note that BEEFY is not a standalone protocol, it is meant to be running alongsid
 finality gadget created for Substrate/Polkadot ecosystem. More details about GRANDPA can be found
 in the [whitepaper](https://github.com/w3f/consensus/blob/master/pdf/grandpa.pdf).
 
-# Context
+## Context
 
-## Bridges
+### Bridges
 
 We want to be able to "bridge" different blockchains. We do so by safely sharing and verifying
 information about each chain’s state, i.e. blockchain `A` should be able to verify that blockchain
 `B` is at block #X.
 
-## Finality
+### Finality
 
 Finality in blockchains is a concept that means that after a given block #X has been finalized,
 it will never be reverted (e.g. due to a re-org). As such, we can be assured that any transaction
 that exists in this block will never be reverted.
 
-## GRANDPA
+### GRANDPA
 
 GRANDPA is our finality gadget. It allows a set of nodes to come to BFT agreement on what is the
 canonical chain. It requires that 2/3 of the validator set agrees on a prefix of the canonical
@@ -36,7 +49,7 @@ chain, which then becomes finalized.
 
 ![img](https://miro.medium.com/max/955/1*NTg26i4xbO3JncF_Usu9MA.png)
 
-### Difficulties of GRANDPA finality proofs
+#### Difficulties of GRANDPA finality proofs
 
 ```rust
 struct Justification<Block: BlockT> {
@@ -81,7 +94,7 @@ efficiently verify in the EVM.
 
 Hence,
 
-### Goals of BEEFY
+#### Goals of BEEFY
 
 1. Allow customisation of crypto to adapt for different targets. Support thresholds signatures as
    well eventually.
@@ -99,9 +112,9 @@ shortcuts:
    validators are reaching finality, we assume they are on-line and well-connected and have
    similar view of the state of the blockchain.
 
-# The BEEFY Protocol
+## The BEEFY Protocol
 
-## Mental Model
+### Mental Model
 
 BEEFY should be considered as an extra voting round done by GRANDPA validators for the current
 best finalized block. Similarly to how GRANDPA is lagging behind best produced (non-finalized)
@@ -143,7 +156,7 @@ loop {
 }
 ```
 
-## Details
+### Details
 
 Before we jump into describing how BEEFY works in details, let's agree on the terms we are going
 to use and actors in the system. All nodes in the network need to participate in the BEEFY
@@ -185,7 +198,7 @@ are up-to-date with the rest of the network, i.e. they are fully synced. Before 
 the node should continue processing imported BEEFY Justifications and votes without actively
 voting themselves.
 
-### Round Selection
+#### Round Selection
 
 Every node (both regular nodes and validators) need to determine locally what they believe
 current round number is. The choice is based on their knowledge of:
@@ -249,7 +262,7 @@ frequency with which new rounds are started. The affected component of the formu
 power-of-two component is greater than the min delta. Note that if `round_number > best_grandpa`
 the validators are not expected to start any round.
 
-### Catch up
+#### Catch up
 
 Every session is guaranteed to have at least one BEEFY-finalized block. However it also means
 that the round at mandatory block must be concluded even though, a new session has already started
@@ -258,7 +271,7 @@ finalized the transition). In such case BEEFY must "catch up" the previous sessi
 conclude rounds for mandatory blocks. Note that older sessions must obviously be finalized by the
 validator set at that point in time, not the latest/current one.
 
-### Initial Sync
+#### Initial Sync
 
 It's all rainbows and unicorns when the node is fully synced with the network. However during cold
 startup it will have hard time determining the current round number. Because of that nodes that
@@ -269,7 +282,7 @@ This can happen asynchronously, but validators, before starting to vote, need to
 about the last session that contains a concluded round on mandatory block in order to initiate the
 catch up procedure.
 
-### Gossip
+#### Gossip
 
 Nodes participating in BEEFY protocol are expected to gossip messages around.
 The protocol defines following messages:
@@ -300,7 +313,7 @@ periodically on the global topic. Let's now dive into description of the message
     - Signatories are part of the current validator set.
   - Mandatory justifications should be announced periodically.
 
-## Misbehavior
+### Misbehavior
 
 Similarly to other PoS protocols, BEEFY considers casting two different votes in the same round a
 misbehavior. I.e. for a particular `round_number`, the validator produces signatures for 2 different
@@ -313,20 +326,20 @@ Misbehavior should be penalized. If more validators misbehave in the exact same 
 penalty should be more severe, up to the entire bonded stake in case we reach `1/3rd + 1`
 validators misbehaving.
 
-## Ethereum
+### Ethereum
 
 Initial version of BEEFY was made to enable efficient bridging with Ethereum, where the light
 client is a Solidity Smart Contract compiled to EVM bytecode. Hence the choice of the initial
 cryptography for BEEFY: `secp256k1` and usage of `keccak256` hashing function.
 
-### Future: Supporting multiple crypto
+#### Future: Supporting multiple crypto
 
 While BEEFY currently works with `secp256k1` signatures, we intend in the future to support
 multiple signature schemes.
 This means that multiple kinds of `SignedCommitment`s might exist and only together they form a
 full `BEEFY Justification`.
 
-## BEEFY Key
+### BEEFY Key
 
 The current cryptographic scheme used by BEEFY is `ecdsa`. This is **different** from other
 schemes like `sr25519` and `ed25519` which are commonly used in Substrate configurations for
@@ -368,6 +381,18 @@ key format message at node startup. Basically something like
 ...
 ```
 
-# BEEFY Light Client
+## BEEFY Light Client
 
 TODO
+
+## Documentation
+
+The reference about this crate can be found [here](https://paritytech.github.io/polkadot-sdk/master/sc_consensus_beefy).
+
+In order to learn about Polkadot SDK, head over to the [Polkadot SDK Developer Documentation](https://paritytech.github.io/polkadot-sdk/master/polkadot_sdk_docs/index.html).
+
+To learn about Polkadot, visit the [Polkadot.network](https://polkadot.network/) website.
+
+## License
+
+This crate is [GPL 3.0 licensed](https://spdx.org/licenses/GPL-3.0-or-later.html) with [Classpath-exception-2.0](https://spdx.org/licenses/Classpath-exception-2.0.html).

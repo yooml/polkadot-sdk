@@ -1,6 +1,16 @@
-# Staking Module
+<div align="center">
 
-The Staking module is used to manage funds at stake by network maintainers.
+<img src="https://raw.githubusercontent.com/paritytech/polkadot-sdk/rzadp/readmes/docs/images/Polkadot_Logo_Horizontal_Pink_BlackOnWhite.png" alt="Polkadot logo" width="200">
+
+# Staking Pallet
+
+This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-sdk/).
+
+</div>
+
+## About
+
+This crate contains a staking module, which is used to manage funds at stake by network maintainers.
 
 - [`staking::Config`](https://docs.rs/pallet-staking/latest/pallet_staking/trait.Config.html)
 - [`Call`](https://docs.rs/pallet-staking/latest/pallet_staking/enum.Call.html)
@@ -265,4 +275,14 @@ is optional and allow to set some initial stakers.
 - [Session](https://docs.rs/pallet-session/latest/pallet_session/): Used to manage sessions. Also, a list of new
   validators is stored in the Session module's `Validators` at the end of each era.
 
-License: Apache-2.0
+## Documentation
+
+The reference about this crate can be found [here](https://paritytech.github.io/polkadot-sdk/master/pallet_staking).
+
+In order to learn about Polkadot SDK, head over to the [Polkadot SDK Developer Documentation](https://paritytech.github.io/polkadot-sdk/master/polkadot_sdk_docs/index.html).
+
+To learn about Polkadot, visit the [Polkadot.network](https://polkadot.network/) website.
+
+## License
+
+This crate is [Apache 2.0 licensed](https://spdx.org/licenses/Apache-2.0.html).

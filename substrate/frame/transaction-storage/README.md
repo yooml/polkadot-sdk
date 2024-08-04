@@ -1,12 +1,22 @@
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/paritytech/polkadot-sdk/rzadp/readmes/docs/images/Polkadot_Logo_Horizontal_Pink_BlackOnWhite.png" alt="Polkadot logo" width="200">
+
 # Transaction Storage Pallet
 
-Indexes transactions and manages storage proofs.
+This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-sdk/).
+
+</div>
+
+## About
+
+This crate contains a pallet, which indexes transactions and manages storage proofs.
 
 Allows storing arbitrary data on the chain. Data is automatically removed after `StoragePeriod` blocks, unless the
 storage is renewed. Validators must submit proof of storing a random chunk of data for block `N - StoragePeriod` when
 producing block `N`.
 
-# Running a chain
+## Running a chain
 
 The following describes how to set up a new storage chain.
 
@@ -43,7 +53,7 @@ block pruning removes old blocks. The chain does not keep full block history.
 cargo run --release -- --chain=sc.json -d /tmp/charlie --storage-chain --keep-blocks=100800 --ipfs-server --validator --charlie --sync=fast
 ```
 
-# Making transactions
+## Making transactions
 
 To store data use the `transactionStorage.store` extrinsic. And IPFS CID can be generated from the Blake2-256 hash of
 the data.
@@ -82,5 +92,14 @@ To renew data and prevent it from being disposed after the storage period, use `
 where `block` is the block number of the previous store or renew transaction, and index is the index of that transaction
 in the block.
 
+## Documentation
 
-License: Apache-2.0
+The reference about this crate can be found [here](https://paritytech.github.io/polkadot-sdk/master/pallet_transaction_storage).
+
+In order to learn about Polkadot SDK, head over to the [Polkadot SDK Developer Documentation](https://paritytech.github.io/polkadot-sdk/master/polkadot_sdk_docs/index.html).
+
+To learn about Polkadot, visit the [Polkadot.network](https://polkadot.network/) website.
+
+## License
+
+This crate is [Apache 2.0 licensed](https://spdx.org/licenses/Apache-2.0.html).

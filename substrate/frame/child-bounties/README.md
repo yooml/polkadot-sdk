@@ -1,4 +1,16 @@
-# Child Bounties Pallet ( `pallet-child-bounties` )
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/paritytech/polkadot-sdk/rzadp/readmes/docs/images/Polkadot_Logo_Horizontal_Pink_BlackOnWhite.png" alt="Polkadot logo" width="200">
+
+# Child Bounties Pallet
+
+This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-sdk/).
+
+</div>
+
+## About
+
+This crate contains a pallet to manage child bounties.
 
 ## Child Bounty
 
@@ -27,3 +39,15 @@ Child Bounty protocol:
 - `unassign_curator` - Unassign an accepted curator from a specific child bounty.
 - `close_child_bounty` - Cancel the child bounty for a specific treasury amount
   and close the bounty.
+
+## Documentation
+
+The reference about this crate can be found [here](https://paritytech.github.io/polkadot-sdk/master/pallet_child_bounties).
+
+In order to learn about Polkadot SDK, head over to the [Polkadot SDK Developer Documentation](https://paritytech.github.io/polkadot-sdk/master/polkadot_sdk_docs/index.html).
+
+To learn about Polkadot, visit the [Polkadot.network](https://polkadot.network/) website.
+
+## License
+
+This crate is [Apache 2.0 licensed](https://spdx.org/licenses/Apache-2.0.html).

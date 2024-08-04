@@ -1,6 +1,16 @@
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/paritytech/polkadot-sdk/rzadp/readmes/docs/images/Polkadot_Logo_Horizontal_Pink_BlackOnWhite.png" alt="Polkadot logo" width="200">
+
 # Balances Module
 
-The Balances module provides functionality for handling accounts and balances.
+This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-sdk/).
+
+</div>
+
+## About
+
+This crate provides functionality for handling accounts and balances.
 
 - [`Config`](https://docs.rs/pallet-balances/latest/pallet_balances/pallet/trait.Config.html)
 - [`Call`](https://docs.rs/pallet-balances/latest/pallet_balances/pallet/enum.Call.html)
@@ -119,4 +129,14 @@ The Balances module depends on the
 
 - Total issued balanced of all accounts should be less than `Config::Balance::max_value()`.
 
-License: Apache-2.0
+## Documentation
+
+The reference about this crate can be found [here](https://paritytech.github.io/polkadot-sdk/master/pallet_balances).
+
+In order to learn about Polkadot SDK, head over to the [Polkadot SDK Developer Documentation](https://paritytech.github.io/polkadot-sdk/master/polkadot_sdk_docs/index.html).
+
+To learn about Polkadot, visit the [Polkadot.network](https://polkadot.network/) website.
+
+## License
+
+This crate is [Apache 2.0 licensed](https://spdx.org/licenses/Apache-2.0.html).

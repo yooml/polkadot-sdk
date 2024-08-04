@@ -1,6 +1,16 @@
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/paritytech/polkadot-sdk/rzadp/readmes/docs/images/Polkadot_Logo_Horizontal_Pink_BlackOnWhite.png" alt="Polkadot logo" width="200">
+
 # Contracts Module
 
-The Contracts module provides functionality for the runtime to deploy and execute WebAssembly smart-contracts.
+This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-sdk/).
+
+</div>
+
+## About
+
+This crate contains the Contracts module, which provides functionality for the runtime to deploy and execute WebAssembly smart-contracts..
 
 - [`Call`](https://paritytech.github.io/substrate/master/pallet_contracts/pallet/enum.Call.html)
 - [`Config`](https://paritytech.github.io/substrate/master/pallet_contracts/pallet/trait.Config.html)
@@ -157,4 +167,14 @@ might not have proper weights associated with them and are therefore considered 
 New interfaces are generally added as unstable and might go through several iterations before they are promoted to a
 stable interface.
 
-License: Apache-2.0
+## Documentation
+
+The reference about this crate can be found [here](https://paritytech.github.io/polkadot-sdk/master/pallet_contracts).
+
+In order to learn about Polkadot SDK, head over to the [Polkadot SDK Developer Documentation](https://paritytech.github.io/polkadot-sdk/master/polkadot_sdk_docs/index.html).
+
+To learn about Polkadot, visit the [Polkadot.network](https://polkadot.network/) website.
+
+## License
+
+This crate is [Apache 2.0 licensed](https://spdx.org/licenses/Apache-2.0.html).

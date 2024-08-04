@@ -1,8 +1,20 @@
-Substrate-specific P2P networking.
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/paritytech/polkadot-sdk/rzadp/readmes/docs/images/Polkadot_Logo_Horizontal_Pink_BlackOnWhite.png" alt="Polkadot logo" width="200">
+
+# Substrate Network Protocol
+
+This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-sdk/).
+
+</div>
+
+## About
+
+This crate contains Substrate-specific P2P networking.
 
 **Important**: This crate is unstable and the API and usage may change.
 
-# Node identities and addresses
+## Node identities and addresses
 
 In a decentralized network, each node possesses a network private key and a network public key.
 In Substrate, the keys are based on the ed25519 curve.
@@ -15,14 +27,14 @@ be faked**.
 A node's identity uniquely identifies a machine on the network. If you start two or more
 clients using the same network key, large interferences will happen.
 
-# Substrate's network protocol
+## Substrate's network protocol
 
 Substrate's networking protocol is based upon libp2p. It is at the moment not possible and not
 planned to permit using something else than the libp2p network stack and the rust-libp2p
 library. However the libp2p framework is very flexible and the rust-libp2p library could be
 extended to support a wider range of protocols than what is offered by libp2p.
 
-## Discovery mechanisms
+### Discovery mechanisms
 
 In order for our node to join a peer-to-peer network, it has to know a list of nodes that are
 part of said network. This includes nodes identities and their address (how to reach them).
@@ -39,7 +51,7 @@ configured Kademlia DHTs (one per configured chain protocol) in order for nodes 
 us their view of the network. More information about Kademlia can be found [on
 Wikipedia](https://en.wikipedia.org/wiki/Kademlia).
 
-## Connection establishment
+### Connection establishment
 
 When node Alice knows node Bob's identity and address, it can establish a connection with Bob.
 All connections must always use encryption and multiplexing. While some node addresses (eg.
@@ -68,7 +80,7 @@ The following multiplexing protocols are supported:
 
 - [Yamux](https://github.com/hashicorp/yamux/blob/master/spec.md).
 
-## Substreams
+### Substreams
 
 Once a connection has been established and uses multiplexing, substreams can be opened. When
 a substream is open, the **multistream-select** protocol is used to negotiate which protocol
@@ -121,7 +133,7 @@ bytes containing some data associated with this block announcement, e.g. a candi
 - Notifications protocols that are registered using `NetworkConfiguration::notifications_protocols`.
 For example: `/paritytech/grandpa/1`. See below for more information.
 
-## The legacy Substrate substream
+### The legacy Substrate substream
 
 Substrate uses a component named the **peerset manager (PSM)**. Through the discovery
 mechanism, the PSM is aware of the nodes that are part of the network and decides which nodes
@@ -152,7 +164,7 @@ Communications within this substream include:
 substream open with is chosen, and the information is requested from it.
 - Gossiping. Used for example by grandpa.
 
-## Request-response protocols
+### Request-response protocols
 
 A so-called request-response protocol is defined as follow:
 
@@ -165,7 +177,7 @@ side as well.
 
 Each request is performed in a new separate substream.
 
-## Notifications protocols
+### Notifications protocols
 
 A so-called notifications protocol is defined as follow:
 
@@ -201,7 +213,7 @@ integer representing the role of the node:
 
 In the future, though, these restrictions will be removed.
 
-# Sync
+## Sync
 
 The crate implements a number of syncing algorithms. The main purpose of the syncing algorithm is
 get the chain to the latest state and keep it synced with the rest of the network by downloading and
@@ -209,7 +221,7 @@ importing new data as soon as it becomes available. Once the node starts it catc
 with one of the initial sync methods listed below, and once it is completed uses a keep-up sync to
 download new blocks.
 
-## Full and light sync
+### Full and light sync
 
 This is the default syncing method for the initial and keep-up sync. The algorithm starts with the
 current best block and downloads block data progressively from multiple peers if available. Once
@@ -223,7 +235,7 @@ block data and request new information as soon as it is announced. In keep-up mo
 announce blocks on all branches and not just the best branch. The sync algorithm tries to be greedy and download
 all data that's announced.
 
-## Fast sync
+### Fast sync
 
 In this mode the initial downloads and verifies full header history. This allows to validate
 authority set transitions and arrive at a recent header. After header chain is verified and imported
@@ -235,12 +247,12 @@ the storage root that is in the target header, the node issues The next `StateRe
 key set to the last key from the previous response. This continues until trie iteration reaches the end.
 The state is then imported into the database and the keep-up sync starts in normal full/light sync mode.
 
-## Warp sync
+### Warp sync
 
 This is similar to fast sync, but instead of downloading and verifying full header chain, the algorithm
 only downloads finalized authority set changes.
 
-### GRANDPA warp sync
+#### GRANDPA warp sync
 
 GRANDPA keeps justifications for each finalized authority set change. Each change is signed by the
 authorities from the previous set. By downloading and verifying these signed hand-offs starting from genesis,
@@ -254,7 +266,7 @@ the fast sync. The state is verified to match the header storage root. After the
 database it is queried for the information that allows GRANDPA and BABE to continue operating from that state.
 This includes BABE epoch information and GRANDPA authority set id.
 
-### Background block download
+#### Background block download
 
 After the latest state has been imported the node is fully operational, but is still missing historic block
 data. I.e. it is unable to serve bock bodies and headers other than the most recent one. To make sure all
@@ -264,7 +276,7 @@ During this download we also import GRANDPA justifications for blocks with autho
 the warp-synced node has all the data to serve for other nodes nodes that might want to sync from it with
 any method.
 
-# Usage
+## Usage
 
 Using the `sc-network` crate is done through the [`NetworkWorker`] struct. Create this
 struct by passing a [`config::Params`], then poll it as if it was a `Future`. You can extract an
@@ -283,5 +295,14 @@ dispatching a background task with the [`NetworkWorker`].
 
 More precise usage details are still being worked on and will likely change in the future.
 
+## Documentation
 
-License: GPL-3.0-or-later WITH Classpath-exception-2.0
+The reference about this crate can be found [here](https://paritytech.github.io/polkadot-sdk/master/sc_network).
+
+In order to learn about Polkadot SDK, head over to the [Polkadot SDK Developer Documentation](https://paritytech.github.io/polkadot-sdk/master/polkadot_sdk_docs/index.html).
+
+To learn about Polkadot, visit the [Polkadot.network](https://polkadot.network/) website.
+
+## License
+
+This crate is [GPL 3.0 licensed](https://spdx.org/licenses/GPL-3.0-or-later.html) with [Classpath-exception-2.0](https://spdx.org/licenses/Classpath-exception-2.0.html).

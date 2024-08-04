@@ -1,4 +1,14 @@
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/paritytech/polkadot-sdk/rzadp/readmes/docs/images/Polkadot_Logo_Horizontal_Pink_BlackOnWhite.png" alt="Polkadot logo" width="200">
+
 # Contracts 📝
+
+This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-sdk/).
+
+</div>
+
+## About
 
 This is a parachain node for smart contracts; it contains a default configuration of
 Substrate's module for smart contracts ‒ the [`pallet-contracts`](https://github.com/paritytech/polkadot-sdk/tree/master/substrate/frame/contracts).
@@ -87,3 +97,7 @@ If everything worked out, the teleported `ROC` tokens will show up under
 Once you have `ROC` you can deploy a contract as you would normally.
 If you're unsure about this, our [guided tutorial](https://use.ink/getting-started/deploy-your-contract)
 will clarify that for you in no time.
+
+## License
+
+This crate is [Apache 2.0 licensed](https://spdx.org/licenses/Apache-2.0.html).

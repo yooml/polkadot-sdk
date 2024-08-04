@@ -1,12 +1,20 @@
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/paritytech/polkadot-sdk/rzadp/readmes/docs/images/Polkadot_Logo_Horizontal_Pink_BlackOnWhite.png" alt="Polkadot logo" width="200">
+
 # Society Module
+
+This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-sdk/).
+
+</div>
+
+## About
+
+This crate contains a society module - an economic game, which incentivizes users to participate
+and maintain a membership society.
 
 - [`society::Config`](https://docs.rs/pallet-society/latest/pallet_society/trait.Config.html)
 - [`Call`](https://docs.rs/pallet-society/latest/pallet_society/enum.Call.html)
-
-## Overview
-
-The Society module is an economic game which incentivizes users to participate
-and maintain a membership society.
 
 ### User Types
 
@@ -225,4 +233,14 @@ make judgement on a suspended candidate.
 - `set_max_membership` - The ROOT origin can update the maximum member count for the society.
 The max membership count must be greater than 1.
 
-License: Apache-2.0
+## Documentation
+
+The reference about this crate can be found [here](https://paritytech.github.io/polkadot-sdk/master/pallet_society).
+
+In order to learn about Polkadot SDK, head over to the [Polkadot SDK Developer Documentation](https://paritytech.github.io/polkadot-sdk/master/polkadot_sdk_docs/index.html).
+
+To learn about Polkadot, visit the [Polkadot.network](https://polkadot.network/) website.
+
+## License
+
+This crate is [Apache 2.0 licensed](https://spdx.org/licenses/Apache-2.0.html).

@@ -1,10 +1,22 @@
-Integration of the GRANDPA finality gadget into Substrate.
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/paritytech/polkadot-sdk/rzadp/readmes/docs/images/Polkadot_Logo_Horizontal_Pink_BlackOnWhite.png" alt="Polkadot logo" width="200">
+
+# Grandpa Consensus
+
+This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-sdk/).
+
+</div>
+
+## About
+
+This crate contains the integration of the GRANDPA finality gadget into Substrate.
 
 This crate is unstable and the API and usage may change.
 
 This crate provides a long-running future that produces finality notifications.
 
-# Usage
+## Usage
 
 First, create a block-import wrapper with the `block_import` function. The
 GRANDPA worker needs to be linked together with this block import object, so
@@ -16,7 +28,7 @@ Next, use the `LinkHalf` and a local configuration to `run_grandpa_voter`.
 This requires a `Network` implementation. The returned future should be
 driven to completion and will finalize blocks in the background.
 
-# Changing authority sets
+## Changing authority sets
 
 The rough idea behind changing authority sets in GRANDPA is that at some point,
 we obtain agreement for some maximum block height that the current set can
@@ -36,4 +48,14 @@ number (this is num(signal) + N). When finalizing a block, we either apply
 or prune any signaled changes based on whether the signaling block is
 included in the newly-finalized chain.
 
-License: GPL-3.0-or-later WITH Classpath-exception-2.0
+## Documentation
+
+The reference about this crate can be found [here](https://paritytech.github.io/polkadot-sdk/master/sc_consensus_grandpa).
+
+In order to learn about Polkadot SDK, head over to the [Polkadot SDK Developer Documentation](https://paritytech.github.io/polkadot-sdk/master/polkadot_sdk_docs/index.html).
+
+To learn about Polkadot, visit the [Polkadot.network](https://polkadot.network/) website.
+
+## License
+
+This crate is [GPL 3.0 licensed](https://spdx.org/licenses/GPL-3.0-or-later.html) with [Classpath-exception-2.0](https://spdx.org/licenses/Classpath-exception-2.0.html).

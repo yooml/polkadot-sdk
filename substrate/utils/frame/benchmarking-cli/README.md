@@ -1,17 +1,28 @@
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/paritytech/polkadot-sdk/rzadp/readmes/docs/images/Polkadot_Logo_Horizontal_Pink_BlackOnWhite.png" alt="Polkadot logo" width="200">
+
 # The FRAME Benchmarking CLI
 
+This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-sdk/).
+
+</div>
+
+## About
+
 This crate contains commands to benchmark various aspects of Substrate and the hardware.  
+
 The goal is to have a comprehensive suite of benchmarks that cover all aspects of Substrate and the hardware that its
 running on.  
 There exist fundamentally two ways to use this crate. A node-integrated CLI version, and a freestanding CLI. If you are
 only interested in pallet benchmarking, then skip ahead to the [Freestanding CLI](#freestanding-cli).
 
-# Node Integrated CLI
+## Node Integrated CLI
 
 Mostly all Substrate nodes will expose some commands for benchmarking. You can refer to the `staging-node-cli` crate as
 an example on how to integrate those. Note that for solely benchmarking pallets, the freestanding CLI is more suitable.
 
-## Usage
+### Usage
 
 Here we invoke the root command on the `staging-node-cli`. Most Substrate nodes should have a similar output, depending
 on their integration of these commands.
@@ -41,13 +52,13 @@ use `--release`.
 For the final results the `production` profile and reference hardware should be used, otherwise the results are not
 comparable.
 
-# Freestanding CLI
+## Freestanding CLI
 
 The freestanding is a standalone CLI that does not rely on any node integration. It can be used to benchmark pallets of
 any FRAME runtime that does not utilize 3rd party host functions.  
 It currently only supports pallet benchmarking, since the other commands still rely on a node.
 
-## Installation
+### Installation
 
 Installing from local source repository:
 
@@ -55,7 +66,7 @@ Installing from local source repository:
 cargo install --locked --path substrate/utils/frame/omni-bencher --profile=production
 ```
 
-## Usage
+### Usage
 
 The exposed pallet sub-command is identical as the node-integrated CLI. The only difference is that it needs to be prefixed
 with a `v1` to ensure drop-in compatibility.
@@ -77,7 +88,7 @@ frame-omni-bencher v1 \
 
 For the exact arguments of the `pallet` command, please refer to the [pallet] sub-module.
 
-# Commands
+## Commands
 
 The sub-commands of both CLIs have the same semantics and are documented in their respective sub-modules:
 
@@ -96,3 +107,15 @@ License: Apache-2.0
 [storage]: src/storage/README.md
 [overhead]: src/overhead/README.md
 [block]: src/block/README.md
+
+## Documentation
+
+The reference about this crate can be found [here](https://paritytech.github.io/polkadot-sdk/master/frame_benchmarking_cli).
+
+In order to learn about Polkadot SDK, head over to the [Polkadot SDK Developer Documentation](https://paritytech.github.io/polkadot-sdk/master/polkadot_sdk_docs/index.html).
+
+To learn about Polkadot, visit the [Polkadot.network](https://polkadot.network/) website.
+
+## License
+
+This crate is [Apache 2.0 licensed](https://spdx.org/licenses/Apache-2.0.html).
