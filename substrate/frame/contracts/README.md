@@ -12,7 +12,8 @@ This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-
 
 ## About
 
-This crate contains the Contracts module, which provides functionality for the runtime to deploy and execute WebAssembly smart-contracts..
+This crate contains the Contracts module,
+which provides functionality for the runtime to deploy and execute WebAssembly smart-contracts.
 
 - [`Call`](https://paritytech.github.io/substrate/master/pallet_contracts/pallet/enum.Call.html)
 - [`Config`](https://paritytech.github.io/substrate/master/pallet_contracts/pallet/trait.Config.html)

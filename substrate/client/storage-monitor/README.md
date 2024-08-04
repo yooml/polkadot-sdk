@@ -12,7 +12,7 @@ This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-
 
 ## About
 
-This crate contains a storage monitor service for substrate
+This crate contains a storage monitor service for Substrate.
 
 ## Documentation
 

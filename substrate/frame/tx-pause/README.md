@@ -12,7 +12,8 @@ This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-
 
 ## About
 
-This crate contains a pallet, which allows dynamic, chain-state-based pausing and unpausing of specific extrinsics via call filters.
+This crate contains a pallet, which allows dynamic,
+chain-state-based pausing and unpausing of specific extrinsics via call filters.
 
 ## Documentation
 

@@ -12,8 +12,9 @@ This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-
 
 ## About
 
-This crate contains a module that allows control of membership of a set of `AccountId`s, useful for managing membership of a
-collective. A prime member may be set.
+This crate contains a module that allows control of membership of a set of `AccountId`s,
+useful for managing membership of a collective.
+A prime member may be set.
 
 ## Documentation
 

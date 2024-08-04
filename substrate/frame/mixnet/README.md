@@ -12,7 +12,8 @@ This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-
 
 ## About
 
-This crate contains a pallet responsible for determining the current mixnet session and phase, and the mixnode set for each session.
+This crate contains a pallet responsible for determining the current mixnet session and phase,
+and the mixnode set for each session.
 
 ## Documentation
 

@@ -12,7 +12,8 @@ This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-
 
 ## About
 
-This crate contains the Authority Discovery Module, which is used by the `client/authority-discovery` to retrieve the current set of authorities.
+This crate contains the Authority Discovery Module,
+which is used by the `client/authority-discovery` to retrieve the current set of authorities.
 
 ## Documentation
 

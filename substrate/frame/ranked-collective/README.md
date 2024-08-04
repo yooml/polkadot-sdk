@@ -12,7 +12,9 @@ This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-
 
 ## About
 
-This crate contains a ranked collective system, in which members of a set of account IDs can make their collective feelings known through dispatched calls from one of two specialized origins.
+This crate contains a ranked collective system,
+in which members of a set of account IDs can make their collective feelings known
+through dispatched calls from one of two specialized origins.
 
 This is a membership pallet providing a `Tally` implementation ready for use with polling
 systems such as the Referenda pallet. Members each have a rank, with zero being the lowest.

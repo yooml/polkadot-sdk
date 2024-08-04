@@ -12,7 +12,8 @@ This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-
 
 ## About
 
-This crate contains a module that acts as the orchestration layer for the runtime. It dispatches incoming extrinsic calls to the
+This crate contains a module that acts as the orchestration layer for the runtime.
+It dispatches incoming extrinsic calls to the
 respective modules in the runtime.
 
 ## Overview

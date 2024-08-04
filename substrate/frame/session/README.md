@@ -12,7 +12,8 @@ This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-
 
 ## About
 
-This crate contains a module, that allows validators to manage their session keys, provides a function for changing the session length,
+This crate contains a module, that allows validators to manage their session keys,
+provides a function for changing the session length,
 and handles session rotation.
 
 - [`session::Trait`](https://docs.rs/pallet-session/latest/pallet_session/trait.Config.html)

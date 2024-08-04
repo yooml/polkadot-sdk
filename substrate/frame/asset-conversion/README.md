@@ -12,7 +12,8 @@ This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-
 
 ## About
 
-This crate contains the Asset Conversion pallet, which allows assets to be converted from one type to another by means of a constant product formula.
+This crate contains the Asset Conversion pallet, which allows assets to be converted from one type to another
+by means of a constant product formula.
 The pallet based is based on [Uniswap V2](https://github.com/Uniswap/v2-core) logic.
 
 ## Overview

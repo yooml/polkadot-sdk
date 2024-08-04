@@ -12,7 +12,8 @@ This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-
 
 ## About
 
-This crates contains the data structures of the [Cross-Consensus Message (XCM)](https://wiki.polkadot.network/docs/learn-xcm) format.
+This crates contains the data structures of the
+[Cross-Consensus Message (XCM)](https://wiki.polkadot.network/docs/learn-xcm) format.
 
 ## Documentation
 
