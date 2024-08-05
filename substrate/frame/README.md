@@ -1,6 +1,8 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/paritytech/polkadot-sdk/rzadp/readmes/docs/images/Polkadot_Logo_Horizontal_Pink_BlackOnWhite.png" alt="Polkadot logo" width="200">
+<img
+alt="Polkadot logo" width="200"
+src="https://raw.githubusercontent.com/paritytech/polkadot-sdk/rzadp/readmes/docs/images/Polkadot_Logo_Horizontal_Pink_BlackOnWhite.png">
 
 # FRAME
 
@@ -10,7 +12,9 @@ This crate is part of the [Polkadot SDK](https://github.com/paritytech/polkadot-
 
 ## About
 
-The FRAME development environment provides modules (called ["pallets"](https://docs.substrate.io/reference/frame-pallets/)) and support libraries that you can use, modify,
+The FRAME development environment provides modules
+(called ["pallets"](https://docs.substrate.io/reference/frame-pallets/))
+and support libraries that you can use, modify,
 and extend to build the runtime logic to suit the needs of your blockchain.
 
 ## Documentation
