@@ -673,7 +673,7 @@ pub fn westend_local_testnet_config() -> Result<WestendChainSpec, String> {
 #[cfg(feature = "rococo-native")]
 pub fn rococo_local_testnet_config() -> Result<RococoChainSpec, String> {
 	Ok(RococoChainSpec::builder(
-		rococo::fast_runtime_binary::WASM_BINARY.ok_or("Rococo development wasm not available")?,
+		rococo::WASM_BINARY.ok_or("Rococo development wasm not available")?,
 		Default::default(),
 	)
 	.with_name("Rococo Local Testnet")
